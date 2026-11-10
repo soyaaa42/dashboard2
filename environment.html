@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Environment Sector Of Tarlac Province</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --c-primary:#15803d;
+  --c-primary-dk:#14532d;
+  --c-primary-lt:#dcfce7;
+  --c-accent:#059669;
+  --c-accent-lt:#d1fae5;
+  --c-blue:#0284c7;
+  --c-blue-lt:#e0f2fe;
+  --c-amber:#b45309;
+  --c-amber-lt:#fef3c7;
+  --c-danger:#dc2626;
+  --c-danger-lt:#fee2e2;
+  --c-bg:#f2f6f2;
+  --c-surface:#ffffff;
+  --c-border:#e2e8f0;
+  --c-text:#0f172a;
+  --c-text-2:#334155;
+  --c-text-muted:#64748b;
+  --sidebar-w:256px;
+  --r-card:18px;
+  --r-sm:10px;
+  --shadow-card:0 4px 20px rgba(15,23,42,.07);
+  --shadow-float:0 12px 40px rgba(15,23,42,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  background:var(--c-bg);
+  color:var(--c-text);
+  display:flex;
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);background:linear-gradient(180deg,#14532d,#052e16);color:#fff;z-index:500;padding:20px 14px;overflow-y:auto;transition:.25s}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand img{width:45px;height:45px;object-fit:contain}
+.brand strong{display:block;font-size:14px}.brand small{display:block;color:#bbf7d0;font-size:10px}
+.side-search{margin:15px 4px}.side-search input{width:100%;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:white;border-radius:10px;padding:10px 12px;outline:none}
+.side-search input::placeholder{color:#cbd5e1}
+.nav-label{display:block;color:#86efac;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;margin:18px 10px 7px}
+.nav-item{display:flex;gap:10px;align-items:center;text-decoration:none;color:#dbece2;padding:10px 11px;border-radius:10px;font-size:13px;font-weight:700;margin:3px 0;transition:.15s}
+.nav-item:hover,.nav-item.active{background:rgba(34,197,94,.18);color:#fff}.nav-item.active{box-shadow:inset 3px 0 #4ade80}
+#sidebarToggle{display:none;position:fixed;top:14px;left:14px;z-index:600;border:0;border-radius:10px;background:#14532d;color:#fff;width:42px;height:42px;font-size:20px}
+#overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:499}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;padding:22px 26px 40px;display:flex;flex-direction:column;gap:20px}
+.topbar{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:var(--shadow-card)}
+.topbar-brand{display:flex;align-items:center;gap:14px}
+.topbar-logo{width:52px;height:52px;border-radius:50%;object-fit:contain;background:var(--c-primary-lt);border:2px solid var(--c-primary)}
+.topbar-brand h1{font-size:18px;font-weight:800;color:var(--c-primary-dk);letter-spacing:-.02em}
+.topbar-brand p{font-size:12px;color:var(--c-text-muted);margin-top:2px}
+.topbar-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:99px;background:var(--c-accent-lt);color:var(--c-accent);font-size:12px;font-weight:800;border:1px solid #bbf7d0}
+.status-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c-accent);box-shadow:0 0 0 5px rgba(5,150,105,.18)}
+.topbar-date{font-size:12px;color:var(--c-text-muted)}
+.hero{background:linear-gradient(135deg,var(--c-primary-dk),var(--c-primary));border-radius:var(--r-card);padding:26px;color:#fff;box-shadow:var(--shadow-card);display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:-100px;top:-130px;background:rgba(255,255,255,.08)}
+.hero h2{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-bottom:5px;position:relative;z-index:1}
+.hero p{font-size:13px;line-height:1.7;color:#d1fae5;max-width:760px;position:relative;z-index:1}
+.hero-badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;color:#fff}
+.section-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:20px;box-shadow:var(--shadow-card)}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.section-eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--c-primary);margin-bottom:4px}
+.section-title{font-size:22px;font-weight:900;color:var(--c-text);letter-spacing:-.025em}
+.section-sub{font-size:13px;color:var(--c-text-muted);line-height:1.6;margin-top:3px}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.sector-card{background:linear-gradient(180deg,#fff,#f8fafc);border:1px solid var(--c-border);border-radius:18px;padding:18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-height:245px;transition:.2s ease}
+.sector-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);border-color:var(--c-primary)}
+.sector-icon{width:50px;height:50px;border-radius:16px;background:var(--c-primary-lt);display:grid;place-items:center;font-size:26px;margin-bottom:12px;border:1px solid rgba(21,128,61,.12)}
+.sector-card h3{font-size:17px;font-weight:900;color:var(--c-primary-dk);margin-bottom:7px}
+.sector-card p{font-size:13px;color:var(--c-text-muted);line-height:1.6;flex:1}
+.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.card-stats div{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:10px;min-height:66px}
+.card-stats span{display:block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text-muted);margin-bottom:4px}
+.card-stats strong{font-size:17px;font-weight:900;color:var(--c-text)}
+.view-btn{margin-top:14px;border:0;border-radius:12px;background:var(--c-primary);color:#fff;font-size:12px;font-weight:900;padding:10px 12px;transition:.15s}
+.view-btn:hover{background:var(--c-primary-dk);transform:translateY(-1px)}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.kpi-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-card)}
+.kpi-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}.kpi-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--c-primary-lt)}
+.kpi-label{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted)}.kpi-value{font-size:23px;font-weight:900;color:var(--c-text)}
+.dashboard-panel{display:none;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:20px;position:relative;overflow:hidden}
+.dashboard-panel.show{display:block}.panel-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:var(--c-danger);color:white;font-size:18px;font-weight:900}
+.table-toolbar{display:grid;grid-template-columns:minmax(220px,360px) auto auto;gap:10px;align-items:center;margin:18px 0 14px;padding-right:42px}
+.table-search{height:44px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:0 12px}.table-search input{width:100%;border:0;outline:0;font-size:13px}
+.table-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;color:#fff;font-size:12px;font-weight:900;padding:10px 12px}.export-btn{background:var(--c-blue)}.print-btn{background:var(--c-primary)}
+.table-badge{justify-self:end;background:var(--c-accent-lt);color:#166534;border:1px solid #bbf7d0;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900}
+.table-wrap{overflow-x:auto;border:1px solid var(--c-border);border-radius:14px}.data-table{min-width:980px}.data-table th,.data-table td{padding:11px 12px;border-bottom:1px solid var(--c-border);font-size:12px;white-space:nowrap;text-align:left}.data-table th{background:var(--c-bg);color:var(--c-text-muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em}.data-table tr:hover td{background:#f8fafc}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.analysis-card{background:#f8fafc;border:1px solid var(--c-border);border-radius:16px;padding:16px}.analysis-card h3{color:var(--c-primary-dk);font-size:16px;font-weight:900;margin-bottom:9px}.analysis-card p,.analysis-card li{color:var(--c-text-2);font-size:13px;line-height:1.7}.analysis-card ul{padding-left:18px}.analysis-card.recommendation{grid-column:1/-1;background:linear-gradient(180deg,#ecfdf5,#fff);border-color:#bbf7d0;border-top:4px solid var(--c-primary)}
+footer{background:var(--c-primary-dk);color:#d1fae5;border-radius:var(--r-card);padding:18px;text-align:center;font-size:12px;font-weight:700}
+@media(max-width:900px){.main{margin-left:0;padding:68px 14px 28px}.sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}#sidebarToggle{display:block}#overlay.show{display:block}.table-toolbar{grid-template-columns:1fr}.table-badge{justify-self:start}.analysis-grid{grid-template-columns:1fr}.analysis-card.recommendation{grid-column:auto}.topbar{align-items:flex-start;flex-direction:column}.sector-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.sector-grid{grid-template-columns:1fr}.card-stats{grid-template-columns:1fr}.hero{padding:22px}.hero h2{font-size:23px}.kpi-strip{grid-template-columns:1fr}}
+@media print{body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:0;top:0;width:100%;display:block!important;box-shadow:none!important;border:none!important}.print-area .panel-close,.print-area .table-toolbar{display:none!important}}
+
+.data-note{background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:14px 18px;font-size:12.5px;color:#7c2d12;line-height:1.65}
+.data-note strong{color:#9a3412}
+.source-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--c-blue-lt);color:var(--c-blue);font-size:10.5px;font-weight:900;border:1px solid #bae6fd;white-space:nowrap}
+.chart-box{background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:16px;margin-top:16px}
+.chart-box h4{font-size:.9rem;color:var(--c-text);margin-bottom:10px}
+.chart-tall{height:520px}
+.chart-mid{height:340px}
+.panel-note{font-size:11.5px;color:var(--c-text-muted);background:#f8fafc;border:1px solid var(--c-border);border-radius:10px;padding:9px 12px;margin-top:10px;line-height:1.6}
+.unavailable-card{background:#fef2f2;border:1px dashed #fca5a5;border-radius:16px;padding:16px;font-size:12.5px;color:#991b1b;line-height:1.6}
+</style>
+</head>
+<body>
+<button id="sidebarToggle" aria-label="Open navigation">☰</button>
+<div id="overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><img src="tarlacoff.png" alt="Tarlac Province"><div><strong>PPDO Tarlac</strong><small>Provincial Data Bank</small></div></div>
+  <div class="side-search"><input id="sideSearch" placeholder="Search navigation…" autocomplete="off"></div>
+  <nav>
+    
+    <span class="nav-label">Main Navigation</span>
+
+    <a class="nav-item" href="homepage.html">🏡 Home Page</a>
+    <a class="nav-item" href="dashboardupdated.html">🏠 Dashboard</a>
+    <a class="nav-item" href="district.html">🗺️ District</a>
+
+    <span class="nav-label">Development Sectors</span>
+
+    <a class="nav-item" href="economic-sector.html">📈 Economic Sector</a>
+    <a class="nav-item" href="infrastructure.html">🏗️ Infrastructure</a>
+    <a class="nav-item" href="social-sector.html">👥 Social Sector</a>
+    <a class="nav-item active" href="environment-sector.html">🌱 Environment Sector</a>
+    <a class="nav-item" href="institutional.html">🏛️ Institutional</a>
+    <a class="nav-item" href="#planningRecommendations">🧭 Planning Recommendations</a>
+    <span class="nav-label">System</span>
+    <a class="nav-item" href="#">⚙️ Settings</a>
+    <a class="nav-item" href="#">👤 Admin Panel</a>
+  </nav>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="tarlacoff.png" alt="Tarlac" class="topbar-logo" onerror="this.style.display='none'">
+      <div><h1>Environment Sector Dashboard</h1><p>Tarlac Province Environmental Management Information System</p></div>
+    </div>
+    <div class="topbar-meta"><span class="status-pill">FINAL CBMS 2024</span><span class="topbar-date">Source: 2024 Tarlac FINAL CBMS</span></div>
+  </header>
+  <section class="hero">
+    <div><h2>🌱 Environment Sector</h2><p>Click a card to view the full 18-municipality breakdown. All figures on this dashboard are computed directly from the 2024 Tarlac FINAL CBMS workbook — no simulated, estimated, or illustrative values are used.</p></div>
+    <div class="hero-badge">Tarlac Province · Source: 2024 Tarlac FINAL CBMS</div>
+  </section>
+  <section class="kpi-strip" id="kpiStrip"></section>
+  <section class="env-overview" id="envOverviewSection">
+    <div class="env-overview-head">
+      <h3>📊 Provincial Indicator Snapshot — FINAL CBMS 2024</h3>
+    </div>
+    <div class="env-chart-row" id="envChartRow">
+      <div class="env-chart-panel env-donut-panel">
+        <div class="env-legend" id="envSnapshotLegend"></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-card">
+    <div class="section-head"><div><div class="section-eyebrow">Environmental Services</div><h2 class="section-title">Tarlac Province Environment Sector Cards</h2><p class="section-sub">Click a card to view its full 18-municipality FINAL CBMS 2024 data table, chart, and planning notes.</p></div></div>
+    <div class="sector-grid" id="sectorGrid"></div>
+  </section>
+
+  <section class="dashboard-panel" id="waterPanel">
+    <button class="panel-close" onclick="closePanel('waterPanel')">×</button>
+    <h2 class="section-title">💧 Water Supply &amp; Drinking Water Service Level</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Drinking Water Service Level</em> and <em>Main Source of Water Supply</em> worksheets. Basic/Limited/Unimproved/Surface-water categories follow the WHO/UNICEF JMP service-ladder definitions used in the workbook.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('waterPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('waterTable','water_service_level.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('waterPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="waterTable"><thead><tr><th>Municipality</th><th>Total Responding HH</th><th>Basic Service</th><th>Basic %</th><th>Limited %</th><th>Unimproved %</th><th>Surface Water %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Basic / Limited / Unimproved drinking-water service by municipality (household counts)</h4><div class="chart-tall"><canvas id="waterServiceChart"></canvas></div></div>
+    <div class="chart-box"><h4>Main source of water supply — provincial distribution (household counts, single denominator: 383,162 responding households)</h4><div class="chart-mid"><canvas id="waterSourceChart"></canvas></div></div>
+    <p class="panel-note">Denominator: total responding households per barangay, summed to the municipality/province level (Drinking Water Service Level worksheet). Rates = Σ frequency ÷ Σ total × 100, never an average of barangay percentages.</p>
+  </section>
+
+  <section class="dashboard-panel" id="sanitationPanel">
+    <button class="panel-close" onclick="closePanel('sanitationPanel')">×</button>
+    <h2 class="section-title">🚻 Sanitation Service Level</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Toilet Facility Service Level</em> worksheet. Basic/Limited/Unimproved/Open Defecation follow the workbook's sanitation-ladder classification.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('sanitationPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('sanitationTable','sanitation_service_level.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('sanitationPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="sanitationTable"><thead><tr><th>Municipality</th><th>Total Responding HH</th><th>Basic %</th><th>Limited %</th><th>Unimproved %</th><th>Open Defecation %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Sanitation service level by municipality (stacked household counts)</h4><div class="chart-tall"><canvas id="sanitationChart"></canvas></div></div>
+    <p class="panel-note">Denominator: total responding households (Toilet Facility Service Level worksheet), summed across barangays before the rate is calculated.</p>
+  </section>
+
+  <section class="dashboard-panel" id="handwashingPanel">
+    <button class="panel-close" onclick="closePanel('handwashingPanel')">×</button>
+    <h2 class="section-title">🧼 Handwashing Facilities</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Handwashing Facility</em> worksheet. Note: this worksheet's total responding households differs from the water/sanitation worksheets and is preserved as its own denominator.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('handwashingPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('handwashingTable','handwashing_facilities.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('handwashingPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="handwashingTable"><thead><tr><th>Municipality</th><th>Total Responding HH</th><th>Basic %</th><th>Limited %</th><th>No Facility %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Handwashing facility level by municipality (stacked household counts)</h4><div class="chart-tall"><canvas id="handwashingChart"></canvas></div></div>
+  </section>
+
+  <section class="dashboard-panel" id="fuelPanel">
+    <button class="panel-close" onclick="closePanel('fuelPanel')">×</button>
+    <h2 class="section-title">🔥 Household Fuel Used for Cooking</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Fuel for Cooking</em> worksheet. This reports the household's reported cooking-fuel type; it is not a measurement of air-pollution exposure.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('fuelPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('fuelTable','household_cooking_fuel.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('fuelPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="fuelTable"><thead><tr><th>Municipality</th><th>Total Responding HH</th><th>Electricity %</th><th>LPG %</th><th>Charcoal %</th><th>Wood %</th><th>Kerosene %</th><th>None %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Households using wood or charcoal as cooking fuel, by municipality</h4><div class="chart-tall"><canvas id="fuelWoodChart"></canvas></div></div>
+    <p class="panel-note">Labeled as "Household Fuel Used for Cooking" per the FINAL CBMS workbook definition; the workbook does not define this as an air-pollution exposure indicator.</p>
+  </section>
+
+  <section class="dashboard-panel" id="wastePanel">
+    <button class="panel-close" onclick="closePanel('wastePanel')">×</button>
+    <h2 class="section-title">♻️ Waste Collection Coverage</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Waste Collection</em> worksheet. This is a <strong>barangay-level</strong> indicator of whether a garbage-collection service is present — it is not a count of households practicing waste segregation, which is not available in this workbook.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('wastePanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('wasteTable','waste_collection_coverage.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('wastePanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • 511 Barangays • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="wasteTable"><thead><tr><th>Municipality</th><th>Total Barangays</th><th>With Collection</th><th>Without Collection</th><th>Coverage %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Barangay waste-collection coverage, by municipality</h4><div class="chart-tall"><canvas id="wasteChart"></canvas></div></div>
+    <p class="panel-note">Denominator: number of barangays per municipality (Total column = 1 per barangay row, summed). This is a barangay-count indicator, not a household indicator.</p>
+  </section>
+
+  <section class="dashboard-panel" id="drrmPanel">
+    <button class="panel-close" onclick="closePanel('drrmPanel')">×</button>
+    <h2 class="section-title">🚨 Barangay DRRM Readiness</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>DRRM</em> worksheet. Three independent <strong>barangay-level</strong> readiness indicators: presence of a disaster/emergency hotline, a written DRRM plan, and a disaster/emergency response team. Each is measured against the same barangay, so their counts are not mutually exclusive and are not summed together.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('drrmPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('drrmTable','barangay_drrm_readiness.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('drrmPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • 511 Barangays • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="drrmTable"><thead><tr><th>Municipality</th><th>Total Barangays</th><th>Hotline %</th><th>Written Plan %</th><th>Response Team %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>DRRM readiness indicators by municipality (% of barangays)</h4><div class="chart-tall"><canvas id="drrmChart"></canvas></div></div>
+    <p class="panel-note">Denominator: number of barangays per municipality. Aggregated as barangay coverage counts and rates, not household rates.</p>
+  </section>
+
+  <section class="dashboard-panel" id="housingPanel">
+    <button class="panel-close" onclick="closePanel('housingPanel')">×</button>
+    <h2 class="section-title">🏚️ Housing Material Vulnerability</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Floor Material Strength</em>, <em>Roof Material Strength</em>, and <em>Outer Wall Material Strength</em> worksheets. "Improved" = strong materials; "Unimproved" = natural, light, or salvaged materials, per the workbook's own definition for each building component.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('housingPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('housingTable','housing_material_vulnerability.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('housingPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="housingTable"><thead><tr><th>Municipality</th><th>Floor Improved %</th><th>Floor Unimproved %</th><th>Roof Improved %</th><th>Roof Unimproved %</th><th>Wall Improved %</th><th>Wall Unimproved %</th></tr></thead><tbody></tbody></table></div>
+    <div class="chart-box"><h4>Unimproved (natural/light/salvaged) material rate by municipality</h4><div class="chart-tall"><canvas id="housingChart"></canvas></div></div>
+    <p class="panel-note">Each material has its own worksheet and its own household-total denominator; floor, roof, and wall totals may differ slightly from one another and from the water/sanitation totals.</p>
+  </section>
+
+  <section class="dashboard-panel" id="electricityPanel">
+    <button class="panel-close" onclick="closePanel('electricityPanel')">×</button>
+    <h2 class="section-title">⚡ Household Electricity Access</h2>
+    <p class="section-sub">Source: 2024 Tarlac FINAL CBMS — <em>Access to Electricity</em> worksheet. This reports whether the household has access to electricity; the workbook does not classify the source as renewable, solar, or clean energy, so this dashboard does not describe it as such.</p>
+    <div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('electricityPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('electricityTable','household_electricity_access.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('electricityPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • FINAL CBMS 2024</span></div>
+    <div class="table-wrap"><table class="data-table" id="electricityTable"><thead><tr><th>Municipality</th><th>Total Responding HH</th><th>With Access</th><th>With Access %</th><th>Without Access %</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="section-card" id="planningRecommendations">
+    <div class="section-head"><div><div class="section-eyebrow">Planning Analysis</div><h2 class="section-title">Environment Sector Planning Recommendation</h2><p class="section-sub">Descriptive interpretation generated from the FINAL CBMS 2024 calculated results above.</p></div></div>
+    <div class="analysis-grid" id="analysisGrid"></div>
+  </section>
+  <footer>PPDO GIS Dashboard · Environment Sector · Tarlac Province · Source: 2024 Tarlac FINAL CBMS</footer>
+</main>
+
+<script>
+/* ---------- sidebar / panel / table infrastructure (unchanged behavior) ---------- */
+const sidebar=document.getElementById('sidebar');
+const sidebarToggle=document.getElementById('sidebarToggle');
+const overlay=document.getElementById('overlay');
+sidebarToggle.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('show')});
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('show')});
+document.getElementById('sideSearch').addEventListener('input',event=>{
+  const query=event.target.value.toLowerCase().trim();
+  document.querySelectorAll('.sidebar .nav-item').forEach(item=>{
+    item.style.display=item.textContent.toLowerCase().includes(query)?'flex':'none';
+  });
+});
+function showPanel(id){
+  document.querySelectorAll('.dashboard-panel').forEach(panel=>panel.classList.remove('show'));
+  const panel=document.getElementById(id);
+  if(panel){panel.classList.add('show');panel.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function closePanel(id){document.getElementById(id)?.classList.remove('show')}
+function filterTable(panelId,value){
+const panel=document.getElementById(panelId); if(!panel)return;
+const rows=panel.querySelectorAll('tbody tr'); const q=value.toLowerCase().trim();
+rows.forEach(row=>{row.style.display=row.textContent.toLowerCase().includes(q)?'':'none'});
+}
+function exportTableCSV(tableId,filename){
+const table=document.getElementById(tableId); if(!table)return;
+const rows=[...table.querySelectorAll('tr')].filter(row=>row.style.display!=='none');
+const csv=rows.map(row=>[...row.children].map(cell=>'"'+cell.textContent.replaceAll('"','""').trim()+'"').join(',')).join('\n');
+const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=filename; link.click(); URL.revokeObjectURL(link.href);
+}
+function printPanel(panelId){
+const panel=document.getElementById(panelId); if(!panel)return;
+panel.classList.add('print-area'); window.print(); setTimeout(()=>panel.classList.remove('print-area'),500);
+}
+
+/* ---------- FINAL CBMS 2024 verified dataset (embedded; extracted from the workbook during development) ---------- */
+const finalCbmsEnvironmentData = {"municipalities":[{"name":"Anao","barangays":18,"water":{"total":3217,"basic":3216,"basicRate":99.97,"limited":0,"limitedRate":0.0,"unimproved":1,"unimprovedRate":0.03,"surfaceWater":0,"surfaceWaterRate":0.0,"notReported":0,"notReportedRate":0.0,"mainSource":{"Frequency - Piped into dwelling":2899,"Frequency - Piped into yard/plot":203,"Frequency - Public Tap/standpipe":34,"Frequency - Protected well/tube well/borehole":80,"Frequency - Protected spring":0,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":0,"Frequency - Unprotected (open dug well)":1,"Frequency - Unprotected spring":0,"Frequency - Surface water":0}},"sanitation":{"total":3217,"basic":3064,"basicRate":95.24,"limited":151,"limitedRate":4.69,"unimproved":2,"unimprovedRate":0.06,"openDefecation":0,"openDefecationRate":0.0},"handwashing":{"total":3136,"basic":2909,"basicRate":92.76,"limited":219,"limitedRate":6.98,"none":8,"noneRate":0.26},"cookingFuel":{"total":3217,"electricity":63,"electricityRate":1.96,"kerosene":9,"keroseneRate":0.28,"lpg":1657,"lpgRate":51.51,"charcoal":21,"charcoalRate":0.65,"wood":1453,"woodRate":45.17,"none":14,"noneRate":0.44},"wasteCollection":{"totalBarangays":18,"collecting":18,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":18,"hotline":18,"hotlineRate":100.0,"plan":18,"planRate":100.0,"responseTeam":18,"responseTeamRate":100.0},"housing":{"floor":{"total":3217,"improved":2591,"improvedRate":80.54,"unimproved":626,"unimprovedRate":19.46},"roof":{"total":3217,"improved":3152,"improvedRate":97.98,"unimproved":65,"unimprovedRate":2.02},"wall":{"total":3217,"improved":2964,"improvedRate":92.14,"unimproved":253,"unimprovedRate":7.86}},"electricity":{"total":3217,"withAccess":3143,"withAccessRate":97.7,"withoutAccess":74,"withoutAccessRate":2.3}},{"name":"Bamban","barangays":15,"water":{"total":20114,"basic":19965,"basicRate":99.26,"limited":70,"limitedRate":0.35,"unimproved":31,"unimprovedRate":0.15,"surfaceWater":16,"surfaceWaterRate":0.08,"notReported":32,"notReportedRate":0.16,"mainSource":{"Frequency - Piped into dwelling":16310,"Frequency - Piped into yard/plot":1727,"Frequency - Public Tap/standpipe":565,"Frequency - Protected well/tube well/borehole":1074,"Frequency - Protected spring":314,"Frequency - Rainwater":37,"Tanker truck/peddler/neighbor":29,"Frequency - Unprotected (open dug well)":3,"Frequency - Unprotected spring":51,"Frequency - Surface water":4}},"sanitation":{"total":20114,"basic":17908,"basicRate":89.03,"limited":1082,"limitedRate":5.38,"unimproved":893,"unimprovedRate":4.44,"openDefecation":231,"openDefecationRate":1.15},"handwashing":{"total":19804,"basic":17719,"basicRate":89.47,"limited":1216,"limitedRate":6.14,"none":869,"noneRate":4.39},"cookingFuel":{"total":20114,"electricity":403,"electricityRate":2.0,"kerosene":1048,"keroseneRate":5.21,"lpg":16187,"lpgRate":80.48,"charcoal":657,"charcoalRate":3.27,"wood":1803,"woodRate":8.96,"none":16,"noneRate":0.08},"wasteCollection":{"totalBarangays":15,"collecting":15,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":15,"hotline":15,"hotlineRate":100.0,"plan":15,"planRate":100.0,"responseTeam":15,"responseTeamRate":100.0},"housing":{"floor":{"total":20114,"improved":18755,"improvedRate":93.24,"unimproved":1359,"unimprovedRate":6.76},"roof":{"total":20114,"improved":19560,"improvedRate":97.25,"unimproved":554,"unimprovedRate":2.75},"wall":{"total":20114,"improved":18543,"improvedRate":92.19,"unimproved":1571,"unimprovedRate":7.81}},"electricity":{"total":20114,"withAccess":19770,"withAccessRate":98.29,"withoutAccess":344,"withoutAccessRate":1.71}},{"name":"Camiling","barangays":61,"water":{"total":22314,"basic":22279,"basicRate":99.84,"limited":3,"limitedRate":0.01,"unimproved":16,"unimprovedRate":0.07,"surfaceWater":14,"surfaceWaterRate":0.06,"notReported":2,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":13855,"Frequency - Piped into yard/plot":2844,"Frequency - Public Tap/standpipe":1103,"Frequency - Protected well/tube well/borehole":4151,"Frequency - Protected spring":287,"Frequency - Rainwater":1,"Tanker truck/peddler/neighbor":31,"Frequency - Unprotected (open dug well)":25,"Frequency - Unprotected spring":0,"Frequency - Surface water":17}},"sanitation":{"total":22314,"basic":18320,"basicRate":82.1,"limited":3326,"limitedRate":14.91,"unimproved":649,"unimprovedRate":2.91,"openDefecation":19,"openDefecationRate":0.09},"handwashing":{"total":21077,"basic":18713,"basicRate":88.78,"limited":1499,"limitedRate":7.11,"none":865,"noneRate":4.1},"cookingFuel":{"total":22314,"electricity":293,"electricityRate":1.31,"kerosene":257,"keroseneRate":1.15,"lpg":14511,"lpgRate":65.03,"charcoal":1191,"charcoalRate":5.34,"wood":5918,"woodRate":26.52,"none":144,"noneRate":0.65},"wasteCollection":{"totalBarangays":61,"collecting":34,"collectingRate":55.74,"notCollecting":27,"notCollectingRate":44.26},"drrm":{"totalBarangays":61,"hotline":39,"hotlineRate":63.93,"plan":59,"planRate":96.72,"responseTeam":59,"responseTeamRate":96.72},"housing":{"floor":{"total":21790,"improved":19477,"improvedRate":89.39,"unimproved":2313,"unimprovedRate":10.61},"roof":{"total":22314,"improved":21676,"improvedRate":97.14,"unimproved":638,"unimprovedRate":2.86},"wall":{"total":22314,"improved":18152,"improvedRate":81.35,"unimproved":4162,"unimprovedRate":18.65}},"electricity":{"total":22314,"withAccess":21955,"withAccessRate":98.39,"withoutAccess":359,"withoutAccessRate":1.61}},{"name":"Capas","barangays":20,"water":{"total":39389,"basic":38766,"basicRate":98.42,"limited":41,"limitedRate":0.1,"unimproved":478,"unimprovedRate":1.21,"surfaceWater":40,"surfaceWaterRate":0.1,"notReported":64,"notReportedRate":0.16,"mainSource":{"Frequency - Piped into dwelling":24125,"Frequency - Piped into yard/plot":5387,"Frequency - Public Tap/standpipe":3652,"Frequency - Protected well/tube well/borehole":5122,"Frequency - Protected spring":564,"Frequency - Rainwater":3,"Tanker truck/peddler/neighbor":51,"Frequency - Unprotected (open dug well)":2,"Frequency - Unprotected spring":473,"Frequency - Surface water":10}},"sanitation":{"total":39389,"basic":30069,"basicRate":76.34,"limited":6044,"limitedRate":15.34,"unimproved":2956,"unimprovedRate":7.5,"openDefecation":320,"openDefecationRate":0.81},"handwashing":{"total":34865,"basic":26955,"basicRate":77.31,"limited":6540,"limitedRate":18.76,"none":1370,"noneRate":3.93},"cookingFuel":{"total":39389,"electricity":614,"electricityRate":1.56,"kerosene":963,"keroseneRate":2.44,"lpg":30519,"lpgRate":77.48,"charcoal":849,"charcoalRate":2.16,"wood":6384,"woodRate":16.21,"none":60,"noneRate":0.15},"wasteCollection":{"totalBarangays":20,"collecting":20,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":20,"hotline":20,"hotlineRate":100.0,"plan":20,"planRate":100.0,"responseTeam":20,"responseTeamRate":100.0},"housing":{"floor":{"total":39389,"improved":35921,"improvedRate":91.2,"unimproved":3468,"unimprovedRate":8.8},"roof":{"total":39389,"improved":37269,"improvedRate":94.62,"unimproved":2120,"unimprovedRate":5.38},"wall":{"total":39389,"improved":34518,"improvedRate":87.63,"unimproved":4871,"unimprovedRate":12.37}},"electricity":{"total":39389,"withAccess":37410,"withAccessRate":94.98,"withoutAccess":1979,"withoutAccessRate":5.02}},{"name":"City of Tarlac (Capital)","barangays":76,"water":{"total":96760,"basic":96515,"basicRate":99.75,"limited":28,"limitedRate":0.03,"unimproved":107,"unimprovedRate":0.11,"surfaceWater":77,"surfaceWaterRate":0.08,"notReported":33,"notReportedRate":0.03,"mainSource":{"Frequency - Piped into dwelling":54872,"Frequency - Piped into yard/plot":16686,"Frequency - Public Tap/standpipe":8088,"Frequency - Protected well/tube well/borehole":16813,"Frequency - Protected spring":136,"Frequency - Rainwater":3,"Tanker truck/peddler/neighbor":97,"Frequency - Unprotected (open dug well)":27,"Frequency - Unprotected spring":29,"Frequency - Surface water":9}},"sanitation":{"total":96760,"basic":75206,"basicRate":77.72,"limited":16399,"limitedRate":16.95,"unimproved":5090,"unimprovedRate":5.26,"openDefecation":65,"openDefecationRate":0.07},"handwashing":{"total":90920,"basic":74226,"basicRate":81.64,"limited":11005,"limitedRate":12.1,"none":5689,"noneRate":6.26},"cookingFuel":{"total":96759,"electricity":2467,"electricityRate":2.55,"kerosene":2230,"keroseneRate":2.3,"lpg":78569,"lpgRate":81.2,"charcoal":5101,"charcoalRate":5.27,"wood":8039,"woodRate":8.31,"none":353,"noneRate":0.36},"wasteCollection":{"totalBarangays":76,"collecting":76,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":76,"hotline":40,"hotlineRate":52.63,"plan":75,"planRate":98.68,"responseTeam":75,"responseTeamRate":98.68},"housing":{"floor":{"total":96759,"improved":93270,"improvedRate":96.39,"unimproved":3489,"unimprovedRate":3.61},"roof":{"total":96759,"improved":95370,"improvedRate":98.56,"unimproved":1389,"unimprovedRate":1.44},"wall":{"total":96759,"improved":89600,"improvedRate":92.6,"unimproved":7159,"unimprovedRate":7.4}},"electricity":{"total":96759,"withAccess":95426,"withAccessRate":98.62,"withoutAccess":1333,"withoutAccessRate":1.38}},{"name":"Concepcion","barangays":45,"water":{"total":41540,"basic":41287,"basicRate":99.39,"limited":4,"limitedRate":0.01,"unimproved":193,"unimprovedRate":0.46,"surfaceWater":50,"surfaceWaterRate":0.12,"notReported":6,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":25484,"Frequency - Piped into yard/plot":2942,"Frequency - Public Tap/standpipe":2094,"Frequency - Protected well/tube well/borehole":10930,"Frequency - Protected spring":33,"Frequency - Rainwater":11,"Tanker truck/peddler/neighbor":34,"Frequency - Unprotected (open dug well)":10,"Frequency - Unprotected spring":0,"Frequency - Surface water":2}},"sanitation":{"total":41540,"basic":31436,"basicRate":75.68,"limited":6076,"limitedRate":14.63,"unimproved":4007,"unimprovedRate":9.65,"openDefecation":21,"openDefecationRate":0.05},"handwashing":{"total":37590,"basic":30155,"basicRate":80.22,"limited":3951,"limitedRate":10.51,"none":3484,"noneRate":9.27},"cookingFuel":{"total":41540,"electricity":891,"electricityRate":2.14,"kerosene":649,"keroseneRate":1.56,"lpg":37478,"lpgRate":90.22,"charcoal":378,"charcoalRate":0.91,"wood":2074,"woodRate":4.99,"none":70,"noneRate":0.17},"wasteCollection":{"totalBarangays":45,"collecting":45,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":45,"hotline":6,"hotlineRate":13.33,"plan":45,"planRate":100.0,"responseTeam":45,"responseTeamRate":100.0},"housing":{"floor":{"total":41540,"improved":38343,"improvedRate":92.3,"unimproved":3197,"unimprovedRate":7.7},"roof":{"total":41540,"improved":40291,"improvedRate":96.99,"unimproved":1249,"unimprovedRate":3.01},"wall":{"total":41540,"improved":38556,"improvedRate":92.82,"unimproved":2984,"unimprovedRate":7.18}},"electricity":{"total":41540,"withAccess":41408,"withAccessRate":99.68,"withoutAccess":132,"withoutAccessRate":0.32}},{"name":"Gerona","barangays":44,"water":{"total":24540,"basic":24476,"basicRate":99.74,"limited":9,"limitedRate":0.04,"unimproved":35,"unimprovedRate":0.14,"surfaceWater":18,"surfaceWaterRate":0.07,"notReported":2,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":12729,"Frequency - Piped into yard/plot":2808,"Frequency - Public Tap/standpipe":517,"Frequency - Protected well/tube well/borehole":8396,"Frequency - Protected spring":21,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":23,"Frequency - Unprotected (open dug well)":43,"Frequency - Unprotected spring":2,"Frequency - Surface water":1}},"sanitation":{"total":24540,"basic":20556,"basicRate":83.77,"limited":3740,"limitedRate":15.24,"unimproved":241,"unimprovedRate":0.98,"openDefecation":3,"openDefecationRate":0.01},"handwashing":{"total":23294,"basic":19872,"basicRate":85.31,"limited":2342,"limitedRate":10.05,"none":1080,"noneRate":4.64},"cookingFuel":{"total":24540,"electricity":732,"electricityRate":2.98,"kerosene":578,"keroseneRate":2.36,"lpg":15837,"lpgRate":64.54,"charcoal":534,"charcoalRate":2.18,"wood":6729,"woodRate":27.42,"none":130,"noneRate":0.53},"wasteCollection":{"totalBarangays":44,"collecting":44,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":44,"hotline":6,"hotlineRate":13.64,"plan":44,"planRate":100.0,"responseTeam":44,"responseTeamRate":100.0},"housing":{"floor":{"total":24540,"improved":23214,"improvedRate":94.6,"unimproved":1326,"unimprovedRate":5.4},"roof":{"total":24540,"improved":23974,"improvedRate":97.69,"unimproved":566,"unimprovedRate":2.31},"wall":{"total":24540,"improved":21948,"improvedRate":89.44,"unimproved":2592,"unimprovedRate":10.56}},"electricity":{"total":24540,"withAccess":24239,"withAccessRate":98.77,"withoutAccess":301,"withoutAccessRate":1.23}},{"name":"La Paz","barangays":21,"water":{"total":16914,"basic":16636,"basicRate":98.36,"limited":257,"limitedRate":1.52,"unimproved":18,"unimprovedRate":0.11,"surfaceWater":1,"surfaceWaterRate":0.01,"notReported":2,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":5801,"Frequency - Piped into yard/plot":5425,"Frequency - Public Tap/standpipe":733,"Frequency - Protected well/tube well/borehole":4924,"Frequency - Protected spring":1,"Frequency - Rainwater":3,"Tanker truck/peddler/neighbor":16,"Frequency - Unprotected (open dug well)":0,"Frequency - Unprotected spring":4,"Frequency - Surface water":7}},"sanitation":{"total":16914,"basic":12748,"basicRate":75.37,"limited":3839,"limitedRate":22.7,"unimproved":277,"unimprovedRate":1.64,"openDefecation":50,"openDefecationRate":0.3},"handwashing":{"total":15725,"basic":13788,"basicRate":87.68,"limited":1399,"limitedRate":8.9,"none":538,"noneRate":3.42},"cookingFuel":{"total":16914,"electricity":280,"electricityRate":1.66,"kerosene":509,"keroseneRate":3.01,"lpg":11456,"lpgRate":67.73,"charcoal":497,"charcoalRate":2.94,"wood":4100,"woodRate":24.24,"none":72,"noneRate":0.43},"wasteCollection":{"totalBarangays":21,"collecting":21,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":21,"hotline":13,"hotlineRate":61.9,"plan":21,"planRate":100.0,"responseTeam":21,"responseTeamRate":100.0},"housing":{"floor":{"total":16914,"improved":15705,"improvedRate":92.85,"unimproved":1209,"unimprovedRate":7.15},"roof":{"total":16914,"improved":15751,"improvedRate":93.12,"unimproved":1163,"unimprovedRate":6.88},"wall":{"total":16914,"improved":14996,"improvedRate":88.66,"unimproved":1918,"unimprovedRate":11.34}},"electricity":{"total":16914,"withAccess":16681,"withAccessRate":98.62,"withoutAccess":233,"withoutAccessRate":1.38}},{"name":"Mayantoc","barangays":24,"water":{"total":8881,"basic":8831,"basicRate":99.44,"limited":12,"limitedRate":0.14,"unimproved":31,"unimprovedRate":0.35,"surfaceWater":2,"surfaceWaterRate":0.02,"notReported":5,"notReportedRate":0.06,"mainSource":{"Frequency - Piped into dwelling":2800,"Frequency - Piped into yard/plot":826,"Frequency - Public Tap/standpipe":668,"Frequency - Protected well/tube well/borehole":4446,"Frequency - Protected spring":43,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":3,"Frequency - Unprotected (open dug well)":3,"Frequency - Unprotected spring":52,"Frequency - Surface water":40}},"sanitation":{"total":8881,"basic":6575,"basicRate":74.03,"limited":2085,"limitedRate":23.48,"unimproved":119,"unimprovedRate":1.34,"openDefecation":102,"openDefecationRate":1.15},"handwashing":{"total":8668,"basic":7562,"basicRate":87.24,"limited":906,"limitedRate":10.45,"none":200,"noneRate":2.31},"cookingFuel":{"total":8881,"electricity":105,"electricityRate":1.18,"kerosene":30,"keroseneRate":0.34,"lpg":4545,"lpgRate":51.18,"charcoal":1559,"charcoalRate":17.55,"wood":2609,"woodRate":29.38,"none":33,"noneRate":0.37},"wasteCollection":{"totalBarangays":24,"collecting":24,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":24,"hotline":20,"hotlineRate":83.33,"plan":24,"planRate":100.0,"responseTeam":24,"responseTeamRate":100.0},"housing":{"floor":{"total":8881,"improved":7939,"improvedRate":89.39,"unimproved":942,"unimprovedRate":10.61},"roof":{"total":8881,"improved":8669,"improvedRate":97.61,"unimproved":212,"unimprovedRate":2.39},"wall":{"total":8881,"improved":7219,"improvedRate":81.29,"unimproved":1662,"unimprovedRate":18.71}},"electricity":{"total":8881,"withAccess":8444,"withAccessRate":95.08,"withoutAccess":437,"withoutAccessRate":4.92}},{"name":"Moncada","barangays":37,"water":{"total":17817,"basic":17783,"basicRate":99.81,"limited":6,"limitedRate":0.03,"unimproved":20,"unimprovedRate":0.11,"surfaceWater":7,"surfaceWaterRate":0.04,"notReported":1,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":9305,"Frequency - Piped into yard/plot":4926,"Frequency - Public Tap/standpipe":1018,"Frequency - Protected well/tube well/borehole":2432,"Frequency - Protected spring":4,"Frequency - Rainwater":1,"Tanker truck/peddler/neighbor":108,"Frequency - Unprotected (open dug well)":23,"Frequency - Unprotected spring":0,"Frequency - Surface water":0}},"sanitation":{"total":17817,"basic":13234,"basicRate":74.28,"limited":4191,"limitedRate":23.52,"unimproved":344,"unimprovedRate":1.93,"openDefecation":48,"openDefecationRate":0.27},"handwashing":{"total":17589,"basic":14765,"basicRate":83.94,"limited":2306,"limitedRate":13.11,"none":518,"noneRate":2.95},"cookingFuel":{"total":17817,"electricity":351,"electricityRate":1.97,"kerosene":227,"keroseneRate":1.27,"lpg":9750,"lpgRate":54.72,"charcoal":266,"charcoalRate":1.49,"wood":7182,"woodRate":40.31,"none":41,"noneRate":0.23},"wasteCollection":{"totalBarangays":37,"collecting":37,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":37,"hotline":31,"hotlineRate":83.78,"plan":37,"planRate":100.0,"responseTeam":37,"responseTeamRate":100.0},"housing":{"floor":{"total":17817,"improved":15999,"improvedRate":89.8,"unimproved":1818,"unimprovedRate":10.2},"roof":{"total":17817,"improved":15999,"improvedRate":89.8,"unimproved":1818,"unimprovedRate":10.2},"wall":{"total":17817,"improved":14764,"improvedRate":82.86,"unimproved":3053,"unimprovedRate":17.14}},"electricity":{"total":17817,"withAccess":17197,"withAccessRate":96.52,"withoutAccess":620,"withoutAccessRate":3.48}},{"name":"Paniqui","barangays":35,"water":{"total":25590,"basic":25341,"basicRate":99.03,"limited":237,"limitedRate":0.93,"unimproved":5,"unimprovedRate":0.02,"surfaceWater":5,"surfaceWaterRate":0.02,"notReported":2,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":16906,"Frequency - Piped into yard/plot":4636,"Frequency - Public Tap/standpipe":947,"Frequency - Protected well/tube well/borehole":3039,"Frequency - Protected spring":12,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":43,"Frequency - Unprotected (open dug well)":6,"Frequency - Unprotected spring":1,"Frequency - Surface water":0}},"sanitation":{"total":25590,"basic":20222,"basicRate":79.02,"limited":5279,"limitedRate":20.63,"unimproved":68,"unimprovedRate":0.27,"openDefecation":21,"openDefecationRate":0.08},"handwashing":{"total":23900,"basic":20626,"basicRate":86.3,"limited":3062,"limitedRate":12.81,"none":212,"noneRate":0.89},"cookingFuel":{"total":25588,"electricity":293,"electricityRate":1.15,"kerosene":846,"keroseneRate":3.31,"lpg":17475,"lpgRate":68.29,"charcoal":547,"charcoalRate":2.14,"wood":6363,"woodRate":24.87,"none":64,"noneRate":0.25},"wasteCollection":{"totalBarangays":35,"collecting":35,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":35,"hotline":18,"hotlineRate":51.43,"plan":35,"planRate":100.0,"responseTeam":35,"responseTeamRate":100.0},"housing":{"floor":{"total":25588,"improved":23587,"improvedRate":92.18,"unimproved":2001,"unimprovedRate":7.82},"roof":{"total":25588,"improved":25043,"improvedRate":97.87,"unimproved":545,"unimprovedRate":2.13},"wall":{"total":25588,"improved":22447,"improvedRate":87.72,"unimproved":3141,"unimprovedRate":12.28}},"electricity":{"total":25588,"withAccess":25175,"withAccessRate":98.39,"withoutAccess":413,"withoutAccessRate":1.61}},{"name":"Pura","barangays":16,"water":{"total":6966,"basic":6954,"basicRate":99.83,"limited":0,"limitedRate":0.0,"unimproved":2,"unimprovedRate":0.03,"surfaceWater":10,"surfaceWaterRate":0.14,"notReported":0,"notReportedRate":0.0,"mainSource":{"Frequency - Piped into dwelling":5479,"Frequency - Piped into yard/plot":514,"Frequency - Public Tap/standpipe":520,"Frequency - Protected well/tube well/borehole":445,"Frequency - Protected spring":1,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":5,"Frequency - Unprotected (open dug well)":0,"Frequency - Unprotected spring":0,"Frequency - Surface water":2}},"sanitation":{"total":6966,"basic":5815,"basicRate":83.48,"limited":1139,"limitedRate":16.35,"unimproved":11,"unimprovedRate":0.16,"openDefecation":1,"openDefecationRate":0.01},"handwashing":{"total":6796,"basic":6602,"basicRate":97.15,"limited":169,"limitedRate":2.49,"none":25,"noneRate":0.37},"cookingFuel":{"total":6966,"electricity":72,"electricityRate":1.03,"kerosene":43,"keroseneRate":0.62,"lpg":4927,"lpgRate":70.73,"charcoal":51,"charcoalRate":0.73,"wood":1846,"woodRate":26.5,"none":27,"noneRate":0.39},"wasteCollection":{"totalBarangays":16,"collecting":10,"collectingRate":62.5,"notCollecting":6,"notCollectingRate":37.5},"drrm":{"totalBarangays":16,"hotline":16,"hotlineRate":100.0,"plan":16,"planRate":100.0,"responseTeam":16,"responseTeamRate":100.0},"housing":{"floor":{"total":6966,"improved":6616,"improvedRate":94.98,"unimproved":350,"unimprovedRate":5.02},"roof":{"total":6966,"improved":6859,"improvedRate":98.46,"unimproved":107,"unimprovedRate":1.54},"wall":{"total":6966,"improved":6035,"improvedRate":86.64,"unimproved":931,"unimprovedRate":13.36}},"electricity":{"total":6966,"withAccess":6880,"withAccessRate":98.77,"withoutAccess":86,"withoutAccessRate":1.23}},{"name":"Ramos","barangays":9,"water":{"total":6035,"basic":6027,"basicRate":99.87,"limited":3,"limitedRate":0.05,"unimproved":0,"unimprovedRate":0.0,"surfaceWater":5,"surfaceWaterRate":0.08,"notReported":0,"notReportedRate":0.0,"mainSource":{"Frequency - Piped into dwelling":5213,"Frequency - Piped into yard/plot":466,"Frequency - Public Tap/standpipe":112,"Frequency - Protected well/tube well/borehole":160,"Frequency - Protected spring":68,"Frequency - Rainwater":2,"Tanker truck/peddler/neighbor":13,"Frequency - Unprotected (open dug well)":1,"Frequency - Unprotected spring":0,"Frequency - Surface water":0}},"sanitation":{"total":6035,"basic":4807,"basicRate":79.65,"limited":1188,"limitedRate":19.69,"unimproved":35,"unimprovedRate":0.58,"openDefecation":5,"openDefecationRate":0.08},"handwashing":{"total":6034,"basic":5781,"basicRate":95.81,"limited":239,"limitedRate":3.96,"none":14,"noneRate":0.23},"cookingFuel":{"total":6035,"electricity":100,"electricityRate":1.66,"kerosene":214,"keroseneRate":3.55,"lpg":3888,"lpgRate":64.42,"charcoal":50,"charcoalRate":0.83,"wood":1769,"woodRate":29.31,"none":14,"noneRate":0.23},"wasteCollection":{"totalBarangays":9,"collecting":9,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":9,"hotline":9,"hotlineRate":100.0,"plan":9,"planRate":100.0,"responseTeam":9,"responseTeamRate":100.0},"housing":{"floor":{"total":6035,"improved":5557,"improvedRate":92.08,"unimproved":478,"unimprovedRate":7.92},"roof":{"total":6035,"improved":5916,"improvedRate":98.03,"unimproved":119,"unimprovedRate":1.97},"wall":{"total":6035,"improved":5396,"improvedRate":89.41,"unimproved":639,"unimprovedRate":10.59}},"electricity":{"total":6035,"withAccess":5967,"withAccessRate":98.87,"withoutAccess":68,"withoutAccessRate":1.13}},{"name":"San Clemente","barangays":12,"water":{"total":3363,"basic":3183,"basicRate":94.65,"limited":143,"limitedRate":4.25,"unimproved":1,"unimprovedRate":0.03,"surfaceWater":7,"surfaceWaterRate":0.21,"notReported":29,"notReportedRate":0.86,"mainSource":{"Frequency - Piped into dwelling":1500,"Frequency - Piped into yard/plot":635,"Frequency - Public Tap/standpipe":247,"Frequency - Protected well/tube well/borehole":752,"Frequency - Protected spring":220,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":8,"Frequency - Unprotected (open dug well)":0,"Frequency - Unprotected spring":0,"Frequency - Surface water":1}},"sanitation":{"total":3363,"basic":2267,"basicRate":67.41,"limited":757,"limitedRate":22.51,"unimproved":334,"unimprovedRate":9.93,"openDefecation":5,"openDefecationRate":0.15},"handwashing":{"total":2766,"basic":2497,"basicRate":90.27,"limited":158,"limitedRate":5.71,"none":111,"noneRate":4.01},"cookingFuel":{"total":3363,"electricity":30,"electricityRate":0.89,"kerosene":13,"keroseneRate":0.39,"lpg":2246,"lpgRate":66.79,"charcoal":229,"charcoalRate":6.81,"wood":820,"woodRate":24.38,"none":25,"noneRate":0.74},"wasteCollection":{"totalBarangays":12,"collecting":12,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":12,"hotline":8,"hotlineRate":66.67,"plan":12,"planRate":100.0,"responseTeam":12,"responseTeamRate":100.0},"housing":{"floor":{"total":3363,"improved":3026,"improvedRate":89.98,"unimproved":337,"unimprovedRate":10.02},"roof":{"total":3363,"improved":3265,"improvedRate":97.09,"unimproved":98,"unimprovedRate":2.91},"wall":{"total":3363,"improved":2610,"improvedRate":77.61,"unimproved":753,"unimprovedRate":22.39}},"electricity":{"total":3363,"withAccess":3289,"withAccessRate":97.8,"withoutAccess":74,"withoutAccessRate":2.2}},{"name":"San Jose","barangays":13,"water":{"total":10683,"basic":10500,"basicRate":98.29,"limited":74,"limitedRate":0.69,"unimproved":59,"unimprovedRate":0.55,"surfaceWater":41,"surfaceWaterRate":0.38,"notReported":9,"notReportedRate":0.08,"mainSource":{"Frequency - Piped into dwelling":271,"Frequency - Piped into yard/plot":724,"Frequency - Public Tap/standpipe":247,"Frequency - Protected well/tube well/borehole":9055,"Frequency - Protected spring":196,"Frequency - Rainwater":2,"Tanker truck/peddler/neighbor":47,"Frequency - Unprotected (open dug well)":12,"Frequency - Unprotected spring":84,"Frequency - Surface water":45}},"sanitation":{"total":10683,"basic":7533,"basicRate":70.51,"limited":2937,"limitedRate":27.49,"unimproved":48,"unimprovedRate":0.45,"openDefecation":165,"openDefecationRate":1.54},"handwashing":{"total":10670,"basic":9213,"basicRate":86.34,"limited":995,"limitedRate":9.33,"none":462,"noneRate":4.33},"cookingFuel":{"total":10683,"electricity":181,"electricityRate":1.69,"kerosene":4,"keroseneRate":0.04,"lpg":3837,"lpgRate":35.92,"charcoal":931,"charcoalRate":8.71,"wood":5717,"woodRate":53.51,"none":13,"noneRate":0.12},"wasteCollection":{"totalBarangays":13,"collecting":13,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":13,"hotline":11,"hotlineRate":84.62,"plan":13,"planRate":100.0,"responseTeam":13,"responseTeamRate":100.0},"housing":{"floor":{"total":10683,"improved":8747,"improvedRate":81.88,"unimproved":1936,"unimprovedRate":18.12},"roof":{"total":10683,"improved":10259,"improvedRate":96.03,"unimproved":424,"unimprovedRate":3.97},"wall":{"total":10683,"improved":8090,"improvedRate":75.73,"unimproved":2593,"unimprovedRate":24.27}},"electricity":{"total":10683,"withAccess":9887,"withAccessRate":92.55,"withoutAccess":796,"withoutAccessRate":7.45}},{"name":"San Manuel","barangays":15,"water":{"total":7623,"basic":7367,"basicRate":96.64,"limited":155,"limitedRate":2.03,"unimproved":1,"unimprovedRate":0.01,"surfaceWater":2,"surfaceWaterRate":0.03,"notReported":98,"notReportedRate":1.29,"mainSource":{"Frequency - Piped into dwelling":4955,"Frequency - Piped into yard/plot":268,"Frequency - Public Tap/standpipe":201,"Frequency - Protected well/tube well/borehole":2194,"Frequency - Protected spring":0,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":2,"Frequency - Unprotected (open dug well)":3,"Frequency - Unprotected spring":0,"Frequency - Surface water":0}},"sanitation":{"total":7623,"basic":5383,"basicRate":70.62,"limited":2202,"limitedRate":28.89,"unimproved":10,"unimprovedRate":0.13,"openDefecation":28,"openDefecationRate":0.37},"handwashing":{"total":7444,"basic":6345,"basicRate":85.24,"limited":178,"limitedRate":2.39,"none":921,"noneRate":12.37},"cookingFuel":{"total":7623,"electricity":77,"electricityRate":1.01,"kerosene":36,"keroseneRate":0.47,"lpg":4332,"lpgRate":56.83,"charcoal":71,"charcoalRate":0.93,"wood":3082,"woodRate":40.43,"none":25,"noneRate":0.33},"wasteCollection":{"totalBarangays":15,"collecting":15,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":15,"hotline":15,"hotlineRate":100.0,"plan":15,"planRate":100.0,"responseTeam":15,"responseTeamRate":100.0},"housing":{"floor":{"total":7623,"improved":6089,"improvedRate":79.88,"unimproved":1534,"unimprovedRate":20.12},"roof":{"total":7623,"improved":7532,"improvedRate":98.81,"unimproved":91,"unimprovedRate":1.19},"wall":{"total":7623,"improved":6915,"improvedRate":90.71,"unimproved":708,"unimprovedRate":9.29}},"electricity":{"total":7623,"withAccess":7463,"withAccessRate":97.9,"withoutAccess":160,"withoutAccessRate":2.1}},{"name":"Santa Ignacia","barangays":24,"water":{"total":13611,"basic":13594,"basicRate":99.88,"limited":8,"limitedRate":0.06,"unimproved":0,"unimprovedRate":0.0,"surfaceWater":9,"surfaceWaterRate":0.07,"notReported":0,"notReportedRate":0.0,"mainSource":{"Frequency - Piped into dwelling":5853,"Frequency - Piped into yard/plot":5237,"Frequency - Public Tap/standpipe":400,"Frequency - Protected well/tube well/borehole":2037,"Frequency - Protected spring":6,"Frequency - Rainwater":1,"Tanker truck/peddler/neighbor":76,"Frequency - Unprotected (open dug well)":0,"Frequency - Unprotected spring":0,"Frequency - Surface water":1}},"sanitation":{"total":13611,"basic":10550,"basicRate":77.51,"limited":2452,"limitedRate":18.01,"unimproved":608,"unimprovedRate":4.47,"openDefecation":1,"openDefecationRate":0.01},"handwashing":{"total":13460,"basic":12258,"basicRate":91.07,"limited":1177,"limitedRate":8.74,"none":25,"noneRate":0.19},"cookingFuel":{"total":13610,"electricity":427,"electricityRate":3.14,"kerosene":231,"keroseneRate":1.7,"lpg":7340,"lpgRate":53.93,"charcoal":469,"charcoalRate":3.45,"wood":5096,"woodRate":37.44,"none":47,"noneRate":0.35},"wasteCollection":{"totalBarangays":24,"collecting":24,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":24,"hotline":24,"hotlineRate":100.0,"plan":24,"planRate":100.0,"responseTeam":24,"responseTeamRate":100.0},"housing":{"floor":{"total":13610,"improved":12500,"improvedRate":91.84,"unimproved":1110,"unimprovedRate":8.16},"roof":{"total":13610,"improved":13242,"improvedRate":97.3,"unimproved":368,"unimprovedRate":2.7},"wall":{"total":13610,"improved":11360,"improvedRate":83.47,"unimproved":2250,"unimprovedRate":16.53}},"electricity":{"total":13610,"withAccess":13375,"withAccessRate":98.27,"withoutAccess":235,"withoutAccessRate":1.73}},{"name":"Victoria","barangays":26,"water":{"total":17805,"basic":17754,"basicRate":99.71,"limited":42,"limitedRate":0.24,"unimproved":5,"unimprovedRate":0.03,"surfaceWater":2,"surfaceWaterRate":0.01,"notReported":2,"notReportedRate":0.01,"mainSource":{"Frequency - Piped into dwelling":6584,"Frequency - Piped into yard/plot":2643,"Frequency - Public Tap/standpipe":837,"Frequency - Protected well/tube well/borehole":7698,"Frequency - Protected spring":25,"Frequency - Rainwater":0,"Tanker truck/peddler/neighbor":14,"Frequency - Unprotected (open dug well)":3,"Frequency - Unprotected spring":0,"Frequency - Surface water":1}},"sanitation":{"total":17805,"basic":14912,"basicRate":83.75,"limited":2628,"limitedRate":14.76,"unimproved":259,"unimprovedRate":1.45,"openDefecation":6,"openDefecationRate":0.03},"handwashing":{"total":17242,"basic":15135,"basicRate":87.78,"limited":1463,"limitedRate":8.49,"none":644,"noneRate":3.74},"cookingFuel":{"total":17804,"electricity":390,"electricityRate":2.19,"kerosene":99,"keroseneRate":0.56,"lpg":10314,"lpgRate":57.93,"charcoal":274,"charcoalRate":1.54,"wood":6684,"woodRate":37.54,"none":43,"noneRate":0.24},"wasteCollection":{"totalBarangays":26,"collecting":26,"collectingRate":100.0,"notCollecting":0,"notCollectingRate":0.0},"drrm":{"totalBarangays":26,"hotline":26,"hotlineRate":100.0,"plan":26,"planRate":100.0,"responseTeam":26,"responseTeamRate":100.0},"housing":{"floor":{"total":17804,"improved":16793,"improvedRate":94.32,"unimproved":1011,"unimprovedRate":5.68},"roof":{"total":17804,"improved":17576,"improvedRate":98.72,"unimproved":228,"unimprovedRate":1.28},"wall":{"total":17804,"improved":16169,"improvedRate":90.82,"unimproved":1635,"unimprovedRate":9.18}},"electricity":{"total":17804,"withAccess":17399,"withAccessRate":97.73,"withoutAccess":405,"withoutAccessRate":2.27}}],"provincial":{"water":{"total":383162,"basic":380474,"basicRate":99.3,"limited":1092,"limitedRate":0.28,"unimproved":1003,"unimprovedRate":0.26,"surfaceWater":306,"surfaceWaterRate":0.08,"notReported":287,"notReportedRate":0.07},"sanitation":{"total":383162,"basic":300605,"basicRate":78.45,"limited":65515,"limitedRate":17.1,"unimproved":15951,"unimprovedRate":4.16,"openDefecation":1091,"openDefecationRate":0.28},"handwashing":{"total":360980,"basic":305121,"basicRate":84.53,"limited":38824,"limitedRate":10.76,"none":17035,"noneRate":4.72},"cookingFuel":{"total":383157,"electricity":7769,"electricityRate":2.03,"kerosene":7986,"keroseneRate":2.08,"lpg":274868,"lpgRate":71.74,"charcoal":13675,"charcoalRate":3.57,"wood":77668,"woodRate":20.27,"none":1191,"noneRate":0.31},"wasteCollection":{"totalBarangays":511,"collecting":478,"collectingRate":93.54,"notCollecting":33,"notCollectingRate":6.46},"drrm":{"totalBarangays":511,"hotline":335,"hotlineRate":65.56,"plan":508,"planRate":99.41,"responseTeam":508,"responseTeamRate":99.41},"housing":{"floor":{"total":382633,"improved":354129,"improvedRate":92.55,"unimproved":28504,"unimprovedRate":7.45},"roof":{"total":383157,"improved":371403,"improvedRate":96.93,"unimproved":11754,"unimprovedRate":3.07},"wall":{"total":383157,"improved":340282,"improvedRate":88.81,"unimproved":42875,"unimprovedRate":11.19}},"electricity":{"total":383157,"withAccess":375108,"withAccessRate":97.9,"withoutAccess":8049,"withoutAccessRate":2.1},"totalBarangays":511},"labels":{"mainWaterSource":["Frequency - Piped into dwelling","Frequency - Piped into yard/plot","Frequency - Public Tap/standpipe","Frequency - Protected well/tube well/borehole","Frequency - Protected spring","Frequency - Rainwater","Tanker truck/peddler/neighbor","Frequency - Unprotected (open dug well)","Frequency - Unprotected spring","Frequency - Surface water"]}};
+
+/* ---------- formatting helpers ---------- */
+function fmtNum(n){ return (n===null||n===undefined) ? 'N/A' : Number(n).toLocaleString('en-US'); }
+function fmtPct(n){ return (n===null||n===undefined) ? 'N/A' : Number(n).toFixed(2)+'%'; }
+
+const MUNIS = finalCbmsEnvironmentData.municipalities;
+const PROV = finalCbmsEnvironmentData.provincial;
+const PALETTE = ['#15803d','#0284c7','#b45309','#dc2626','#059669','#64748b','#7c3aed','#0f6b5c'];
+
+/* ---------- KPI strip ---------- */
+function renderKPIs(){
+  const kpis = [
+    {icon:'💧', label:'Basic Drinking-Water Service', value: fmtPct(PROV.water.basicRate)},
+    {icon:'🚻', label:'Basic Sanitation Service', value: fmtPct(PROV.sanitation.basicRate)},
+    {icon:'♻️', label:'Barangay Waste Collection Coverage', value: fmtPct(PROV.wasteCollection.collectingRate)},
+    {icon:'⚡', label:'Household Electricity Access', value: fmtPct(PROV.electricity.withAccessRate)}
+  ];
+  document.getElementById('kpiStrip').innerHTML = kpis.map(k=>`
+    <div class="kpi-card"><div class="kpi-top"><span class="kpi-icon">${k.icon}</span><span class="kpi-label">${k.label}</span></div><div class="kpi-value">${k.value}</div></div>
+  `).join('');
+}
+
+/* ---------- provincial snapshot chart ---------- */
+let envSnapshotChart=null;
+function renderSnapshotChart(){
+  const rows = [
+    {label:'Basic Drinking-Water Service (HH)', value: PROV.water.basicRate, color:'#0284c7'},
+    {label:'Basic Sanitation Service (HH)', value: PROV.sanitation.basicRate, color:'#15803d'},
+    {label:'Basic Handwashing Facility (HH)', value: PROV.handwashing.basicRate, color:'#059669'},
+    {label:'Waste Collection Coverage (Barangay)', value: PROV.wasteCollection.collectingRate, color:'#7c3aed'},
+    {label:'Written DRRM Plan (Barangay)', value: PROV.drrm.planRate, color:'#b45309'},
+    {label:'Improved Roof Material (HH)', value: PROV.housing.roof.improvedRate, color:'#0f6b5c'},
+    {label:'Household Electricity Access (HH)', value: PROV.electricity.withAccessRate, color:'#dc2626'}
+  ];
+  const canvas = document.getElementById('envSnapshotChart');
+  if (envSnapshotChart) envSnapshotChart.destroy();
+  envSnapshotChart = new Chart(canvas, {
+    type:'bar',
+    data:{ labels: rows.map(r=>r.label), datasets:[{ data: rows.map(r=>r.value), backgroundColor: rows.map(r=>r.color), borderRadius:7, barThickness:26, maxBarThickness:30 }]},
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      layout:{padding:{top:4,right:24,bottom:0,left:4}},
+      scales:{ x:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'},grid:{color:'#e8eef0'}}, y:{grid:{display:false}} },
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${ctx.label}: ${Number(ctx.raw).toFixed(2)}%` } } }
+    }
+  });
+  document.getElementById('envSnapshotLegend').innerHTML = rows.map(r=>`
+  `).join('');
+}
+
+/* ---------- sector cards ---------- */
+function renderSectorCards(){
+  const cards = [
+    { id:'waterPanel', icon:'💧', title:'Water Service Level', desc:'Basic, limited, unimproved, and surface-water drinking-water service among responding households.', s1:['Basic Service', fmtNum(PROV.water.basic)], s2:['Basic Rate', fmtPct(PROV.water.basicRate)] },
+    { id:'sanitationPanel', icon:'🚻', title:'Sanitation Service Level', desc:'Basic, limited, unimproved sanitation, and open defecation among responding households.', s1:['Basic Sanitation', fmtNum(PROV.sanitation.basic)], s2:['Basic Rate', fmtPct(PROV.sanitation.basicRate)] },
+    { id:'handwashingPanel', icon:'🧼', title:'Handwashing Facilities', desc:'Basic, limited, and no handwashing facility among responding households.', s1:['Basic Facility', fmtNum(PROV.handwashing.basic)], s2:['Basic Rate', fmtPct(PROV.handwashing.basicRate)] },
+    { id:'fuelPanel', icon:'🔥', title:'Cooking Fuel', desc:'Household fuel used for cooking: electricity, LPG, charcoal, wood, kerosene, or none.', s1:['Using LPG', fmtNum(PROV.cookingFuel.lpg)], s2:['LPG Rate', fmtPct(PROV.cookingFuel.lpgRate)] },
+    { id:'wastePanel', icon:'♻️', title:'Waste Collection Coverage', desc:'Barangay-level presence of a garbage-collection service (not household waste segregation).', s1:['Barangays Served', fmtNum(PROV.wasteCollection.collecting)], s2:['Coverage Rate', fmtPct(PROV.wasteCollection.collectingRate)] },
+    { id:'drrmPanel', icon:'🚨', title:'Barangay DRRM Readiness', desc:'Barangay-level disaster hotline, written DRRM plan, and response-team presence.', s1:['With Written Plan', fmtNum(PROV.drrm.plan)], s2:['Plan Rate', fmtPct(PROV.drrm.planRate)] },
+    { id:'housingPanel', icon:'🏚️', title:'Housing Material Vulnerability', desc:'Improved vs. unimproved floor, roof, and outer-wall materials among responding households.', s1:['Improved Roof', fmtNum(PROV.housing.roof.improved)], s2:['Improved Rate', fmtPct(PROV.housing.roof.improvedRate)] },
+    { id:'electricityPanel', icon:'⚡', title:'Household Electricity Access', desc:'Household-level access to electricity (not classified as renewable or clean energy in this workbook).', s1:['With Access', fmtNum(PROV.electricity.withAccess)], s2:['Access Rate', fmtPct(PROV.electricity.withAccessRate)] }
+  ];
+  document.getElementById('sectorGrid').innerHTML = cards.map(c=>`
+    <article class="sector-card" onclick="showPanel('${c.id}')">
+      <div class="sector-icon">${c.icon}</div><h3>${c.title}</h3><p>${c.desc}</p>
+      <div class="card-stats"><div><span>${c.s1[0]}</span><strong>${c.s1[1]}</strong></div><div><span>${c.s2[0]}</span><strong>${c.s2[1]}</strong></div></div>
+      <button class="view-btn">View Data</button>
+    </article>
+  `).join('');
+}
+
+/* ---------- tables ---------- */
+function renderTables(){
+  document.querySelector('#waterTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.water.total)}</td><td>${fmtNum(m.water.basic)}</td><td>${fmtPct(m.water.basicRate)}</td><td>${fmtPct(m.water.limitedRate)}</td><td>${fmtPct(m.water.unimprovedRate)}</td><td>${fmtPct(m.water.surfaceWaterRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#sanitationTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.sanitation.total)}</td><td>${fmtPct(m.sanitation.basicRate)}</td><td>${fmtPct(m.sanitation.limitedRate)}</td><td>${fmtPct(m.sanitation.unimprovedRate)}</td><td>${fmtPct(m.sanitation.openDefecationRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#handwashingTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.handwashing.total)}</td><td>${fmtPct(m.handwashing.basicRate)}</td><td>${fmtPct(m.handwashing.limitedRate)}</td><td>${fmtPct(m.handwashing.noneRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#fuelTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.cookingFuel.total)}</td><td>${fmtPct(m.cookingFuel.electricityRate)}</td><td>${fmtPct(m.cookingFuel.lpgRate)}</td><td>${fmtPct(m.cookingFuel.charcoalRate)}</td><td>${fmtPct(m.cookingFuel.woodRate)}</td><td>${fmtPct(m.cookingFuel.keroseneRate)}</td><td>${fmtPct(m.cookingFuel.noneRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#wasteTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.wasteCollection.totalBarangays)}</td><td>${fmtNum(m.wasteCollection.collecting)}</td><td>${fmtNum(m.wasteCollection.notCollecting)}</td><td>${fmtPct(m.wasteCollection.collectingRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#drrmTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.drrm.totalBarangays)}</td><td>${fmtPct(m.drrm.hotlineRate)}</td><td>${fmtPct(m.drrm.planRate)}</td><td>${fmtPct(m.drrm.responseTeamRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#housingTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtPct(m.housing.floor.improvedRate)}</td><td>${fmtPct(m.housing.floor.unimprovedRate)}</td><td>${fmtPct(m.housing.roof.improvedRate)}</td><td>${fmtPct(m.housing.roof.unimprovedRate)}</td><td>${fmtPct(m.housing.wall.improvedRate)}</td><td>${fmtPct(m.housing.wall.unimprovedRate)}</td></tr>
+  `).join('');
+
+  document.querySelector('#electricityTable tbody').innerHTML = MUNIS.map(m=>`
+    <tr><td>${m.name}</td><td>${fmtNum(m.electricity.total)}</td><td>${fmtNum(m.electricity.withAccess)}</td><td>${fmtPct(m.electricity.withAccessRate)}</td><td>${fmtPct(m.electricity.withoutAccessRate)}</td></tr>
+  `).join('');
+}
+
+/* ---------- generic chart builders ---------- */
+const charts = {};
+function destroyIfExists(key){ if(charts[key]){ charts[key].destroy(); charts[key]=null; } }
+
+function groupedBarChart(key, canvasId, labels, datasets, opts={}){
+  destroyIfExists(key);
+  const canvas = document.getElementById(canvasId);
+  charts[key] = new Chart(canvas, {
+    type:'bar',
+    data:{ labels, datasets },
+    options: Object.assign({
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      layout:{padding:{top:4,right:20,bottom:0,left:4}},
+      scales:{
+        x:{beginAtZero:true, stacked: !!opts.stacked, grid:{color:'#e8eef0'}, ticks:{callback:v=> opts.isPercent ? v+'%' : Number(v).toLocaleString()}},
+        y:{stacked: !!opts.stacked, grid:{display:false}, ticks:{font:{size:10}}}
+      },
+      plugins:{ legend:{display:true, position:'bottom', labels:{boxWidth:12,font:{size:11}}},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.dataset.label}: ${opts.isPercent? Number(ctx.raw).toFixed(2)+'%' : Number(ctx.raw).toLocaleString()}` } } }
+    }, opts.chartOptions||{})
+  });
+}
+
+function renderWaterChart(){
+  groupedBarChart('water','waterServiceChart', MUNIS.map(m=>m.name), [
+    {label:'Basic', data: MUNIS.map(m=>m.water.basic), backgroundColor:'#0284c7'},
+    {label:'Limited', data: MUNIS.map(m=>m.water.limited), backgroundColor:'#b45309'},
+    {label:'Unimproved', data: MUNIS.map(m=>m.water.unimproved), backgroundColor:'#dc2626'},
+    {label:'Surface Water', data: MUNIS.map(m=>m.water.surfaceWater), backgroundColor:'#64748b'}
+  ]);
+}
+
+function renderWaterSourceChart(){
+  destroyIfExists('waterSource');
+  const labels = finalCbmsEnvironmentData.labels.mainWaterSource.map(l=>l.replace('Frequency - ','').replace('Frequency-',''));
+  const totals = labels.map((_,i)=>{
+    const key = finalCbmsEnvironmentData.labels.mainWaterSource[i];
+    return MUNIS.reduce((sum,m)=> sum + (m.water.mainSource[key]||0), 0);
+  });
+  const canvas = document.getElementById('waterSourceChart');
+  charts['waterSource'] = new Chart(canvas, {
+    type:'bar',
+    data:{ labels, datasets:[{ data: totals, backgroundColor: PALETTE.concat(PALETTE), borderRadius:6 }]},
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      scales:{ x:{beginAtZero:true, ticks:{callback:v=>Number(v).toLocaleString()}, grid:{color:'#e8eef0'}}, y:{grid:{display:false}, ticks:{font:{size:10}}} },
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${Number(ctx.raw).toLocaleString()} households` } } }
+    }
+  });
+}
+
+function renderSanitationChart(){
+  groupedBarChart('sanitation','sanitationChart', MUNIS.map(m=>m.name), [
+    {label:'Basic', data: MUNIS.map(m=>m.sanitation.basic), backgroundColor:'#15803d'},
+    {label:'Limited', data: MUNIS.map(m=>m.sanitation.limited), backgroundColor:'#b45309'},
+    {label:'Unimproved', data: MUNIS.map(m=>m.sanitation.unimproved), backgroundColor:'#dc2626'},
+    {label:'Open Defecation', data: MUNIS.map(m=>m.sanitation.openDefecation), backgroundColor:'#0f172a'}
+  ], {stacked:true});
+}
+
+function renderHandwashingChart(){
+  groupedBarChart('handwashing','handwashingChart', MUNIS.map(m=>m.name), [
+    {label:'Basic', data: MUNIS.map(m=>m.handwashing.basic), backgroundColor:'#059669'},
+    {label:'Limited', data: MUNIS.map(m=>m.handwashing.limited), backgroundColor:'#b45309'},
+    {label:'No Facility', data: MUNIS.map(m=>m.handwashing.none), backgroundColor:'#dc2626'}
+  ], {stacked:true});
+}
+
+function renderFuelChart(){
+  groupedBarChart('fuel','fuelWoodChart', MUNIS.map(m=>m.name), [
+    {label:'Wood', data: MUNIS.map(m=>m.cookingFuel.wood), backgroundColor:'#7c3aed'},
+    {label:'Charcoal', data: MUNIS.map(m=>m.cookingFuel.charcoal), backgroundColor:'#b45309'}
+  ]);
+}
+
+function renderWasteChart(){
+  destroyIfExists('waste');
+  const canvas = document.getElementById('wasteChart');
+  charts['waste'] = new Chart(canvas, {
+    type:'bar',
+    data:{ labels: MUNIS.map(m=>m.name), datasets:[{ label:'Coverage Rate', data: MUNIS.map(m=>m.wasteCollection.collectingRate), backgroundColor:'#7c3aed', borderRadius:6 }]},
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      scales:{ x:{beginAtZero:true,max:100, ticks:{callback:v=>v+'%'}, grid:{color:'#e8eef0'}}, y:{grid:{display:false}, ticks:{font:{size:10}}} },
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${Number(ctx.raw).toFixed(2)}% of barangays` } } }
+    }
+  });
+}
+
+function renderDrrmChart(){
+  groupedBarChart('drrm','drrmChart', MUNIS.map(m=>m.name), [
+    {label:'Hotline', data: MUNIS.map(m=>m.drrm.hotlineRate), backgroundColor:'#0284c7'},
+    {label:'Written Plan', data: MUNIS.map(m=>m.drrm.planRate), backgroundColor:'#15803d'},
+    {label:'Response Team', data: MUNIS.map(m=>m.drrm.responseTeamRate), backgroundColor:'#b45309'}
+  ], {isPercent:true, chartOptions:{scales:{x:{max:100}}}});
+}
+
+function renderHousingChart(){
+  groupedBarChart('housing','housingChart', MUNIS.map(m=>m.name), [
+    {label:'Floor Unimproved', data: MUNIS.map(m=>m.housing.floor.unimprovedRate), backgroundColor:'#dc2626'},
+    {label:'Roof Unimproved', data: MUNIS.map(m=>m.housing.roof.unimprovedRate), backgroundColor:'#b45309'},
+    {label:'Wall Unimproved', data: MUNIS.map(m=>m.housing.wall.unimprovedRate), backgroundColor:'#7c3aed'}
+  ], {isPercent:true, chartOptions:{scales:{x:{max:100}}}});
+}
+
+/* ---------- planning recommendations (generated from calculated results) ---------- */
+function bottomN(getter, n=3){
+  return [...MUNIS].sort((a,b)=>getter(a)-getter(b)).slice(0,n);
+}
+function topN(getter, n=3){
+  return [...MUNIS].sort((a,b)=>getter(b)-getter(a)).slice(0,n);
+}
+function renderAnalysis(){
+  const lowWater = bottomN(m=>m.water.basicRate);
+  const lowSan = bottomN(m=>m.sanitation.basicRate);
+  const lowHw = bottomN(m=>m.handwashing.basicRate);
+  const highWood = topN(m=>m.cookingFuel.woodRate);
+  const lowWaste = bottomN(m=>m.wasteCollection.collectingRate,2);
+  const lowDrrm = bottomN(m=>m.drrm.hotlineRate,2);
+  const lowRoof = bottomN(m=>m.housing.roof.improvedRate);
+  const lowElec = bottomN(m=>m.electricity.withAccessRate,2);
+
+  const cards = [
+    { h:'Water Supply &amp; Drinking Water (Household)', p:`Provincewide, ${fmtPct(PROV.water.basicRate)} of ${fmtNum(PROV.water.total)} responding households (${fmtNum(PROV.water.basic)}) have basic drinking-water service. The lowest basic-service rates are recorded in ${lowWater.map(m=>`${m.name} (${fmtPct(m.water.basicRate)})`).join(', ')}. These municipalities should be prioritized for water-source verification and service-level improvement.` },
+    { h:'Sanitation Service Level (Household)', p:`${fmtPct(PROV.sanitation.basicRate)} of responding households (${fmtNum(PROV.sanitation.basic)}) have basic sanitation, while ${fmtPct(PROV.sanitation.openDefecationRate)} (${fmtNum(PROV.sanitation.openDefecation)}) report open defecation. ${lowSan.map(m=>`${m.name} (${fmtPct(m.sanitation.basicRate)} basic)`).join(', ')} record the lowest basic-sanitation rates and warrant sanitation-facility investment.` },
+    { h:'Handwashing Facilities (Household)', p:`${fmtPct(PROV.handwashing.basicRate)} of the ${fmtNum(PROV.handwashing.total)} households reporting to this worksheet have a basic handwashing facility. ${lowHw.map(m=>`${m.name} (${fmtPct(m.handwashing.basicRate)})`).join(', ')} post the lowest basic-facility rates.` },
+    { h:'Household Cooking Fuel', p:`LPG is the predominant cooking fuel provincewide at ${fmtPct(PROV.cookingFuel.lpgRate)}, while ${fmtPct(PROV.cookingFuel.woodRate)} of households (${fmtNum(PROV.cookingFuel.wood)}) use wood. Wood use is highest in ${highWood.map(m=>`${m.name} (${fmtPct(m.cookingFuel.woodRate)})`).join(', ')}. This is reported strictly as fuel-type distribution, not as an air-pollution exposure measure.` },
+    { h:'Waste Collection Coverage (Barangay)', p:`${fmtPct(PROV.wasteCollection.collectingRate)} of the province's ${fmtNum(PROV.wasteCollection.totalBarangays)} barangays (${fmtNum(PROV.wasteCollection.collecting)}) have a garbage-collection service. ${lowWaste.map(m=>`${m.name} (${fmtPct(m.wasteCollection.collectingRate)}, ${fmtNum(m.wasteCollection.collecting)}/${fmtNum(m.wasteCollection.totalBarangays)} barangays)`).join(' and ')} report the lowest barangay-level coverage.` },
+    { h:'Barangay DRRM Readiness', p:`${fmtPct(PROV.drrm.planRate)} of barangays report a written DRRM plan and ${fmtPct(PROV.drrm.responseTeamRate)} report a response team, but only ${fmtPct(PROV.drrm.hotlineRate)} report a disaster/emergency hotline. Hotline presence is lowest in ${lowDrrm.map(m=>`${m.name} (${fmtPct(m.drrm.hotlineRate)}, ${fmtNum(m.drrm.hotline)}/${fmtNum(m.drrm.totalBarangays)} barangays)`).join(' and ')}, a barangay-level, not household-level, gap.` },
+    { h:'Housing Material Vulnerability (Household)', p:`${fmtPct(PROV.housing.roof.improvedRate)} of households have an improved (strong-material) roof, ${fmtPct(PROV.housing.wall.improvedRate)} an improved outer wall, and ${fmtPct(PROV.housing.floor.improvedRate)} an improved floor. Improved-roof coverage is lowest in ${lowRoof.map(m=>`${m.name} (${fmtPct(m.housing.roof.improvedRate)})`).join(', ')}, indicating higher verified structural vulnerability in those municipalities.` },
+    { h:'Household Electricity Access', p:`${fmtPct(PROV.electricity.withAccessRate)} of responding households (${fmtNum(PROV.electricity.withAccess)}) have access to electricity. Access is lowest in ${lowElec.map(m=>`${m.name} (${fmtPct(m.electricity.withAccessRate)})`).join(' and ')}.` }
+  ];
+
+  const recBullets = [
+    `Direct water-service improvement resources toward ${lowWater.map(m=>m.name).join(', ')}, the municipalities with the lowest basic drinking-water service rate.`,
+    `Prioritize sanitation-facility upgrades in ${lowSan.map(m=>m.name).join(', ')}, where basic sanitation coverage trails the provincial rate of ${fmtPct(PROV.sanitation.basicRate)}.`,
+    `Expand handwashing-facility provision in ${lowHw.map(m=>m.name).join(', ')}.`,
+    `Coordinate with MENRO/CENRO on barangay waste-collection expansion in ${lowWaste.map(m=>m.name).join(' and ')}, where barangay-level coverage is below the provincial rate of ${fmtPct(PROV.wasteCollection.collectingRate)}.`,
+    `Coordinate with MDRRMO to establish or formalize disaster/emergency hotlines in ${lowDrrm.map(m=>m.name).join(' and ')}, the barangays' lowest-scoring readiness indicator.`,
+    `Prioritize housing-materials assistance (roofing in particular) in ${lowRoof.map(m=>m.name).join(', ')}.`,
+    `Coordinate with the electric cooperative/utility on last-mile connections in ${lowElec.map(m=>m.name).join(' and ')}.`
+  ];
+
+  const analysisGrid = document.getElementById('analysisGrid');
+  analysisGrid.innerHTML = cards.map(c=>`<div class="analysis-card"><h3>${c.h}</h3><p>${c.p}</p></div>`).join('')
+    + `<div class="analysis-card recommendation"><h3>Recommended Priority Action</h3><ul>${recBullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+       <p style="margin-top:10px;font-weight:700;color:var(--c-primary-dk)">Planning recommendations are descriptive interpretations of the 2024 FINAL CBMS results and should be validated with the concerned PPDO, CENRO, MENRO, MDRRMO and municipal offices before policy implementation.</p></div>`;
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  renderKPIs();
+  renderSnapshotChart();
+  renderSectorCards();
+  renderTables();
+  renderWaterChart();
+  renderWaterSourceChart();
+  renderSanitationChart();
+  renderHandwashingChart();
+  renderFuelChart();
+  renderWasteChart();
+  renderDrrmChart();
+  renderHousingChart();
+  renderAnalysis();
+});
+</script>
+
+</html>

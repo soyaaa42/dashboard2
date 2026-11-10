@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Social Sector Of Tarlac Province</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --c-primary:#0f6b5c;
+  --c-primary-dk:#094d42;
+  --c-primary-lt:#e6f4f1;
+  --c-accent:#16a34a;
+  --c-accent-lt:#dcfce7;
+  --c-blue:#1d4ed8;
+  --c-blue-lt:#dbeafe;
+  --c-amber:#d97706;
+  --c-amber-lt:#fef3c7;
+  --c-danger:#dc2626;
+  --c-danger-lt:#fee2e2;
+  --c-bg:#f1f5f4;
+  --c-surface:#ffffff;
+  --c-border:#e2e8f0;
+  --c-text:#0f172a;
+  --c-text-2:#334155;
+  --c-text-muted:#64748b;
+  --sidebar-w:256px;
+  --r-card:18px;
+  --r-sm:10px;
+  --shadow-card:0 4px 20px rgba(15,23,42,.07);
+  --shadow-float:0 12px 40px rgba(15,23,42,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  background:var(--c-bg);
+  color:var(--c-text);
+  display:flex;
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);background:linear-gradient(180deg,#123b27,#0b2b1b);color:#fff;z-index:500;padding:20px 14px;overflow-y:auto;transition:.25s}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand img{width:45px;height:45px;object-fit:contain}
+.brand strong{display:block;font-size:14px}.brand small{display:block;color:#bbf7d0;font-size:10px}
+.side-search{margin:15px 4px}.side-search input{width:100%;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:white;border-radius:10px;padding:10px 12px;outline:none}
+.side-search input::placeholder{color:#cbd5e1}
+.nav-label{display:block;color:#86efac;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;margin:18px 10px 7px}
+.nav-item{display:flex;gap:10px;align-items:center;text-decoration:none;color:#dbece2;padding:10px 11px;border-radius:10px;font-size:13px;font-weight:700;margin:3px 0;transition:.15s}
+.nav-item:hover,.nav-item.active{background:rgba(34,197,94,.18);color:#fff}.nav-item.active{box-shadow:inset 3px 0 #4ade80}
+#sidebarToggle{display:none;position:fixed;top:14px;left:14px;z-index:600;border:0;border-radius:10px;background:#14532d;color:#fff;width:42px;height:42px;font-size:20px}
+#overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:499}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;padding:22px 26px 40px;display:flex;flex-direction:column;gap:20px}
+.topbar{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:var(--shadow-card)}
+.topbar-brand{display:flex;align-items:center;gap:14px}
+.topbar-logo{width:52px;height:52px;border-radius:50%;object-fit:contain;background:var(--c-primary-lt);border:2px solid var(--c-primary)}
+.topbar-brand h1{font-size:18px;font-weight:800;color:var(--c-primary-dk);letter-spacing:-.02em}
+.topbar-brand p{font-size:12px;color:var(--c-text-muted);margin-top:2px}
+.topbar-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:99px;background:var(--c-accent-lt);color:var(--c-accent);font-size:12px;font-weight:800;border:1px solid #bbf7d0}
+.status-pill:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c-accent);box-shadow:0 0 0 5px rgba(22,163,74,.18)}
+.topbar-date{font-size:12px;color:var(--c-text-muted)}
+.hero{background:linear-gradient(135deg,var(--c-primary-dk),var(--c-primary));border-radius:var(--r-card);padding:26px;color:#fff;box-shadow:var(--shadow-card);display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:-100px;top:-130px;background:rgba(255,255,255,.08)}
+.hero h2{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-bottom:5px;position:relative;z-index:1}
+.hero p{font-size:13px;line-height:1.7;color:#d1fae5;max-width:760px;position:relative;z-index:1}
+.hero-badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;color:#fff}
+.section-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:20px;box-shadow:var(--shadow-card)}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.section-eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--c-primary);margin-bottom:4px}
+.section-title{font-size:22px;font-weight:900;color:var(--c-text);letter-spacing:-.025em}
+.section-sub{font-size:13px;color:var(--c-text-muted);line-height:1.6;margin-top:3px}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.sector-card{background:linear-gradient(180deg,#fff,#f8fafc);border:1px solid var(--c-border);border-radius:18px;padding:18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;min-height:245px;transition:.2s ease}
+.sector-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-float);border-color:var(--c-primary)}
+.sector-icon{width:50px;height:50px;border-radius:16px;background:var(--c-primary-lt);display:grid;place-items:center;font-size:26px;margin-bottom:12px;border:1px solid rgba(15,107,92,.12)}
+.sector-card h3{font-size:17px;font-weight:900;color:var(--c-primary-dk);margin-bottom:7px}
+.sector-card p{font-size:13px;color:var(--c-text-muted);line-height:1.6;flex:1}
+.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.card-stats div{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:10px;min-height:66px}
+.card-stats span{display:block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--c-text-muted);margin-bottom:4px}
+.card-stats strong{font-size:17px;font-weight:900;color:var(--c-text)}
+.view-btn{margin-top:14px;border:0;border-radius:12px;background:var(--c-primary);color:#fff;font-size:12px;font-weight:900;padding:10px 12px;transition:.15s}
+.view-btn:hover{background:var(--c-primary-dk);transform:translateY(-1px)}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.kpi-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-card)}
+.kpi-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}.kpi-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--c-primary-lt)}
+.kpi-label{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--c-text-muted)}.kpi-value{font-size:23px;font-weight:900;color:var(--c-text)}
+.dashboard-panel{display:none;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:20px;position:relative;overflow:hidden}
+.dashboard-panel.show{display:block}.panel-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:var(--c-danger);color:white;font-size:18px;font-weight:900}
+.table-toolbar{display:grid;grid-template-columns:minmax(220px,360px) auto auto;gap:10px;align-items:center;margin:18px 0 14px;padding-right:42px}
+.table-search{height:44px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:0 12px}.table-search input{width:100%;border:0;outline:0;font-size:13px}
+.table-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;color:#fff;font-size:12px;font-weight:900;padding:10px 12px}.export-btn{background:var(--c-blue)}.print-btn{background:var(--c-primary)}
+.table-badge{justify-self:end;background:var(--c-accent-lt);color:#166534;border:1px solid #bbf7d0;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900}
+.table-wrap{overflow-x:auto;border:1px solid var(--c-border);border-radius:14px}.data-table{min-width:980px}.data-table th,.data-table td{padding:11px 12px;border-bottom:1px solid var(--c-border);font-size:12px;white-space:nowrap;text-align:left}.data-table th{background:var(--c-bg);color:var(--c-text-muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em}.data-table tr:hover td{background:#f8fafc}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.analysis-card{background:#f8fafc;border:1px solid var(--c-border);border-radius:16px;padding:16px}.analysis-card h3{color:var(--c-primary-dk);font-size:16px;font-weight:900;margin-bottom:9px}.analysis-card p,.analysis-card li{color:var(--c-text-2);font-size:13px;line-height:1.7}.analysis-card ul{padding-left:18px}.analysis-card.recommendation{grid-column:1/-1;background:linear-gradient(180deg,#ecfdf5,#fff);border-color:#bbf7d0;border-top:4px solid var(--c-primary)}
+footer{background:var(--c-primary-dk);color:#d1fae5;border-radius:var(--r-card);padding:18px;text-align:center;font-size:12px;font-weight:700}
+@media(max-width:900px){.main{margin-left:0;padding:68px 14px 28px}.sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}#sidebarToggle{display:block}#overlay.show{display:block}.table-toolbar{grid-template-columns:1fr}.table-badge{justify-self:start}.analysis-grid{grid-template-columns:1fr}.analysis-card.recommendation{grid-column:auto}.topbar{align-items:flex-start;flex-direction:column}.sector-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.sector-grid{grid-template-columns:1fr}.card-stats{grid-template-columns:1fr}.hero{padding:22px}.hero h2{font-size:23px}.kpi-strip{grid-template-columns:1fr}}
+@media print{body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:0;top:0;width:100%;display:block!important;box-shadow:none!important;border:none!important}.print-area .panel-close,.print-area .table-toolbar{display:none!important}}
+</style>
+</head>
+<body>
+<button id="sidebarToggle" aria-label="Open navigation">☰</button>
+<div id="overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><img src="tarlacoff.png" alt="Tarlac Province"><div><strong>PPDO Tarlac</strong><small>Provincial Data Bank</small></div></div>
+  <div class="side-search"><input id="sideSearch" placeholder="Search navigation…" autocomplete="off"></div>
+  <nav>
+    <span class="nav-label">Main Navigation</span>
+    <a class="nav-item" href="homepage.html">🏡 Home Page</a>
+    <a class="nav-item" href="dashboardupdated.html">🏠 Dashboard</a>
+    <a class="nav-item" href="district.html">🗺️ District</a>
+    <span class="nav-label">Development Sectors</span>
+    <a class="nav-item" href="economic-sector.html">📈 Economic Sector</a>
+    <a class="nav-item" href="infrastructure.html">🏗️ Infrastructure</a>
+    <a class="nav-item active" href="social-sector.html">👥 Social Sector</a>
+    <a class="nav-item" href="institutional.html">🏛️ Institutional</a>
+    <a class="nav-item" href="environment.html">🌱 Environment</a>
+    <a class="nav-item" href="#planningRecommendations">🧭 Planning Recommendations</a>
+    <span class="nav-label">System</span>
+    <a class="nav-item" href="#">⚙️ Settings</a>
+    <a class="nav-item" href="#">👤 Admin Panel</a>
+  </nav>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="tarlacoff.png" alt="Tarlac" class="topbar-logo" onerror="this.style.display='none'">
+      <div><h1>Social Sector Dashboard</h1><p>Tarlac Province Social Development Information System</p></div>
+    </div>
+    <div class="topbar-meta"><span class="status-pill">CBMS 2024 Ready</span><span class="topbar-date">Social Services Monitoring</span></div>
+  </header>
+  <section class="hero">
+    <div><h2>👥 Social Sector</h2><p>Select a card to view the CBMS Data</p></div>
+    <div class="hero-badge">Tarlac Province · Social Development</div>
+  </section>
+  <section class="kpi-strip">
+    <div class="kpi-card"><div class="kpi-top"><span class="kpi-icon">👥</span><span class="kpi-label">Total Population</span></div><div class="kpi-value">1,475,227</div></div>
+    <div class="kpi-card"><div class="kpi-top"><span class="kpi-icon">🧓</span><span class="kpi-label">Senior Citizens w/ ID</span></div><div class="kpi-value">84.5%</div></div>
+    <div class="kpi-card"><div class="kpi-top"><span class="kpi-icon">🧑‍🎓</span><span class="kpi-label">Youth Not in Educ/Employ</span></div><div class="kpi-value">25.6%</div></div>
+    <div class="kpi-card"><div class="kpi-top"><span class="kpi-icon">🤝</span><span class="kpi-label">Households w/ Financial Account</span></div><div class="kpi-value">60.0%</div></div>
+  </section>
+  <style>
+    .cbms-overview{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-card);padding:22px;margin:0;box-shadow:var(--shadow-card);animation:cbmsFadeIn .5s ease both;}
+    @keyframes cbmsFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    .cbms-overview-head h3{font-size:1.15rem;color:var(--c-primary-dk);margin-bottom:4px;}
+    .cbms-overview-head p{color:var(--c-text-muted);font-size:.92rem;margin-bottom:18px;}
+    .cbms-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:22px;}
+    .cbms-kpi-card{background:linear-gradient(160deg,#ffffff,var(--c-primary-lt));border:1px solid var(--c-border);border-radius:var(--r-sm);padding:16px 18px;box-shadow:0 6px 16px rgba(15,23,42,.05);transition:transform .25s ease,box-shadow .25s ease;}
+    .cbms-kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(15,23,42,.09);}
+    .cbms-kpi-label{display:block;font-size:.78rem;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+    .cbms-kpi-card strong{display:block;font-size:1.4rem;color:var(--c-primary-dk);line-height:1.2;}
+    .cbms-kpi-card small{color: var(--c-text-muted);font-size:.78rem;}
+    .cbms-chart-row{display:flex;flex-wrap:wrap;gap:20px;align-items:stretch;}
+    .cbms-chart-panel{background:#fff;border:1px solid var(--c-border);border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05);overflow:hidden;}
+    .cbms-bar-panel{display:none;}
+    .cbms-donut-panel{flex:1 1 100%;min-width:280px;display:flex;flex-direction:column;align-items:stretch;}
+    .cbms-pie-wrap{height:340px;width:100%;margin:0 auto;}
+    .cbms-chart-panel h4{font-size:.95rem;color:var(--c-text);margin-bottom:10px;}
+    .cbms-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--c-border);}
+    .cbms-legend-item{display:grid;grid-template-columns:11px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:.78rem;padding:8px 9px;border-radius:10px;background:#f8fafc;transition:background .2s ease;}
+    .cbms-legend-item:hover{background:var(--c-bg);}
+    .cbms-legend-swatch{width:11px;height:11px;border-radius:4px;flex-shrink:0;}
+    .cbms-legend-label{min-width:0;color:var(--c-text);font-weight:700;line-height:1.25;}
+    .cbms-legend-value{color:var(--c-primary-dk);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;}
+    .cbms-empty-note{text-align:center;color:var(--c-text-muted);padding:40px 10px;font-size:.95rem;}
+    @media (max-width:900px){.cbms-donut-panel{flex:1 1 100%;}.cbms-pie-wrap{height:330px}.cbms-legend{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media (max-width:560px){.cbms-overview{padding:16px}.cbms-pie-wrap{height:360px}.cbms-legend{grid-template-columns:1fr}.cbms-legend-item{font-size:.76rem}}
+  </style>
+  <section class="cbms-overview" id="cbmsOverviewSection">
+    <div class="cbms-overview-head">
+      <h3>📊 CBMS Indicator Comparison</h3>
+      <p>Indicators are shown separately because their populations and denominators overlap.</p>
+    </div>
+    <div class="cbms-kpi-grid">
+      <div class="cbms-kpi-card">
+        <span class="cbms-kpi-label">Province Population</span>
+        <strong id="cbmsTotalRecords">1,475,227</strong>
+        <small>Household members recorded in Population by Sex.</small>
+      </div>
+      <div class="cbms-kpi-card">
+        <span class="cbms-kpi-label">Responding Households</span>
+        <strong id="cbmsLargestCategory">383,162</strong>
+        <small id="cbmsLargestValue">Food, finance and safety denominator</small>
+      </div>
+      <div class="cbms-kpi-card">
+        <span class="cbms-kpi-label">Profile Households</span>
+        <strong id="cbmsSmallestCategory">383,157</strong>
+        <small id="cbmsSmallestValue">Population-profile denominator</small>
+      </div>
+    </div>
+    <div class="cbms-chart-row" id="cbmsChartRow" style="display:none;">
+      <div class="cbms-chart-panel cbms-donut-panel">
+        <h4>Selected CBMS indicators (counts; separate denominators)</h4>
+        <div class="cbms-pie-wrap"><canvas id="cbmsCategoryDonutChart"></canvas></div>
+        <div class="cbms-legend" id="cbmsDonutLegend"></div>
+      </div>
+    </div>
+    <p class="cbms-empty-note" id="cbmsEmptyNote">No CBMS data available.</p>
+  </section>
+  <section class="section-card">
+    <div class="section-head"><div><div class="section-eyebrow">Social Services</div><h2 class="section-title">Tarlac Province Social Sector Cards</h2><p class="section-sub">Click a card to view its full 18-municipality CBMS 2024 table, planning notes, and action recommendations.</p></div></div>
+    <div class="sector-grid">
+      <article class="sector-card" onclick="showPanel('healthPanel')"><div class="sector-icon">🏥</div><h3>Population Profile for Health Planning</h3><p>Population, sex and household counts used to estimate health-service demand. The workbook has no clinic inventory.</p><div class="card-stats"><div><span>Population</span><strong>1,475,227</strong></div><div><span>Profile Households</span><strong>383,157</strong></div></div><button class="view-btn">View Population Data</button></article>
+      <article class="sector-card" onclick="showPanel('educationPanel')"><div class="sector-icon">🏫</div><h3>Education Services</h3><p>School accessibility, learning support, school-age population, and education assistance needs.</p><div class="card-stats"><div><span>TVET Working</span><strong>66.3%</strong></div><div><span>SHS Working</span><strong>45.2%</strong></div></div><button class="view-btn">View Education Data</button></article>
+      <article class="sector-card" onclick="showPanel('seniorPanel')"><div class="sector-icon">🧓</div><h3>Senior Citizen Services</h3><p>Senior citizen assistance, ID registration, social pension support, and elderly-friendly services.</p><div class="card-stats"><div><span>Total Seniors</span><strong>163,748</strong></div><div><span>With ID</span><strong>84.5%</strong></div></div><button class="view-btn">View Senior Data</button></article>
+      <article class="sector-card" onclick="showPanel('youthPanel')"><div class="sector-icon">🧑‍🎓</div><h3>Youth Development</h3><p>Youth participation, leadership, livelihood training, scholarship support, and community activities.</p><div class="card-stats"><div><span>Total Youth</span><strong>270,916</strong></div><div><span>Not-In Rate</span><strong>25.6%</strong></div></div><button class="view-btn">View Youth Data</button></article>
+      <article class="sector-card" onclick="showPanel('welfarePanel')"><div class="sector-icon">🤝</div><h3>Social Welfare</h3><p>Family welfare, vulnerable groups, emergency assistance, livelihood support, and inclusion programs.</p><div class="card-stats"><div><span>Food Worry Rate</span><strong>25.9%</strong></div><div><span>Financial Access</span><strong>60.0%</strong></div></div><button class="view-btn">View Welfare Data</button></article>
+      <article class="sector-card" onclick="showPanel('protectionPanel')"><div class="sector-icon">🛡️</div><h3>Community Protection</h3><p>Protection services, disaster-ready communities, child protection, and safe public spaces.</p><div class="card-stats"><div><span>Feel Safe</span><strong>97.9%</strong></div><div><span>Respondents</span><strong>383,162</strong></div></div><button class="view-btn">View Protection Data</button></article>
+    </div>
+  </section>
+  <section class="dashboard-panel" id="healthPanel"><button class="panel-close" onclick="closePanel('healthPanel')">×</button><h2 class="section-title">👥 Population &amp; Household Profile by Municipality</h2><p class="section-sub">CBMS 2024 population and household counts. Note: the CBMS dataset provided does not include a barangay health-facility/clinic inventory, so this panel uses population and household indicators as the planning base for health service delivery.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('healthPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('healthTable','population_household_profile.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('healthPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="healthTable"><thead><tr><th>Municipality</th><th>Total Population</th><th>Total Households</th><th>Male</th><th>Female</th><th>Avg. Household Size</th></tr></thead><tbody><tr><td>Anao</td><td>12,504</td><td>3,217</td><td>6,324</td><td>6,180</td><td>3.9</td></tr>
+<tr><td>Bamban</td><td>74,415</td><td>20,114</td><td>37,885</td><td>36,530</td><td>3.7</td></tr>
+<tr><td>Camiling</td><td>87,494</td><td>22,314</td><td>43,567</td><td>43,927</td><td>3.9</td></tr>
+<tr><td>Capas</td><td>146,359</td><td>39,389</td><td>74,545</td><td>71,814</td><td>3.7</td></tr>
+<tr><td>Concepcion</td><td>165,140</td><td>41,540</td><td>84,008</td><td>81,132</td><td>4.0</td></tr>
+<tr><td>Gerona</td><td>95,626</td><td>24,540</td><td>48,342</td><td>47,284</td><td>3.9</td></tr>
+<tr><td>La Paz</td><td>68,473</td><td>16,914</td><td>34,823</td><td>33,650</td><td>4.0</td></tr>
+<tr><td>Mayantoc</td><td>32,616</td><td>8,881</td><td>16,554</td><td>16,062</td><td>3.7</td></tr>
+<tr><td>Moncada</td><td>65,611</td><td>17,817</td><td>33,109</td><td>32,502</td><td>3.7</td></tr>
+<tr><td>Paniqui</td><td>99,717</td><td>25,588</td><td>50,440</td><td>49,277</td><td>3.9</td></tr>
+<tr><td>Pura</td><td>26,842</td><td>6,966</td><td>13,557</td><td>13,285</td><td>3.9</td></tr>
+<tr><td>Ramos</td><td>23,128</td><td>6,035</td><td>11,669</td><td>11,459</td><td>3.8</td></tr>
+<tr><td>San Clemente</td><td>13,645</td><td>3,363</td><td>6,801</td><td>6,844</td><td>4.1</td></tr>
+<tr><td>San Jose</td><td>42,763</td><td>10,683</td><td>21,805</td><td>20,958</td><td>4.0</td></tr>
+<tr><td>San Manuel</td><td>29,361</td><td>7,623</td><td>14,767</td><td>14,594</td><td>3.9</td></tr>
+<tr><td>Sta. Ignacia</td><td>51,928</td><td>13,610</td><td>26,053</td><td>25,875</td><td>3.8</td></tr>
+<tr><td>Tarlac City</td><td>369,961</td><td>96,759</td><td>186,399</td><td>183,562</td><td>3.8</td></tr>
+<tr><td>Victoria</td><td>69,644</td><td>17,804</td><td>35,234</td><td>34,410</td><td>3.9</td></tr></tbody></table></div></section>
+  <section class="dashboard-panel" id="educationPanel"><button class="panel-close" onclick="closePanel('educationPanel')">×</button><h2 class="section-title">🏫 TVET &amp; Senior High School Graduate Outcomes by Municipality</h2><p class="section-sub">CBMS 2024 TVET and Senior High School graduate employment status.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('educationPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('educationTable','education_outcomes.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('educationPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="educationTable"><thead><tr><th>Municipality</th><th>TVET Graduates</th><th>TVET Working</th><th>TVET Working Rate</th><th>SHS Graduates</th><th>SHS Working Rate</th></tr></thead><tbody><tr><td>Anao</td><td>102</td><td>59</td><td>57.84%</td><td>218</td><td>43.12%</td></tr>
+<tr><td>Bamban</td><td>135</td><td>86</td><td>63.70%</td><td>2,113</td><td>44.11%</td></tr>
+<tr><td>Camiling</td><td>533</td><td>343</td><td>64.35%</td><td>1,733</td><td>44.43%</td></tr>
+<tr><td>Capas</td><td>358</td><td>229</td><td>63.97%</td><td>4,029</td><td>41.15%</td></tr>
+<tr><td>Concepcion</td><td>368</td><td>228</td><td>61.96%</td><td>3,531</td><td>44.24%</td></tr>
+<tr><td>Gerona</td><td>370</td><td>242</td><td>65.41%</td><td>1,963</td><td>42.54%</td></tr>
+<tr><td>La Paz</td><td>320</td><td>199</td><td>62.19%</td><td>2,099</td><td>42.97%</td></tr>
+<tr><td>Mayantoc</td><td>198</td><td>136</td><td>68.69%</td><td>705</td><td>51.35%</td></tr>
+<tr><td>Moncada</td><td>459</td><td>312</td><td>67.97%</td><td>1,693</td><td>46.43%</td></tr>
+<tr><td>Paniqui</td><td>460</td><td>321</td><td>69.78%</td><td>1,548</td><td>45.99%</td></tr>
+<tr><td>Pura</td><td>56</td><td>34</td><td>60.71%</td><td>461</td><td>52.28%</td></tr>
+<tr><td>Ramos</td><td>147</td><td>113</td><td>76.87%</td><td>612</td><td>49.02%</td></tr>
+<tr><td>San Clemente</td><td>111</td><td>85</td><td>76.58%</td><td>377</td><td>45.09%</td></tr>
+<tr><td>San Jose</td><td>129</td><td>96</td><td>74.42%</td><td>1,289</td><td>49.73%</td></tr>
+<tr><td>San Manuel</td><td>134</td><td>86</td><td>64.18%</td><td>877</td><td>47.09%</td></tr>
+<tr><td>Sta. Ignacia</td><td>134</td><td>84</td><td>62.69%</td><td>1,120</td><td>37.41%</td></tr>
+<tr><td>Tarlac City</td><td>948</td><td>608</td><td>64.14%</td><td>9,555</td><td>46.52%</td></tr>
+<tr><td>Victoria</td><td>661</td><td>465</td><td>70.35%</td><td>1,851</td><td>49.76%</td></tr></tbody></table></div></section>
+  <section class="dashboard-panel" id="seniorPanel"><button class="panel-close" onclick="closePanel('seniorPanel')">×</button><h2 class="section-title">🧓 Senior Citizen ID Coverage by Municipality</h2><p class="section-sub">CBMS 2024 senior citizen population and ID registration status.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('seniorPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('seniorTable','senior_citizen_id.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('seniorPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="seniorTable"><thead><tr><th>Municipality</th><th>Total Senior Citizens</th><th>With ID</th><th>Without ID</th><th>With ID Rate</th></tr></thead><tbody><tr><td>Anao</td><td>1,852</td><td>1,397</td><td>450</td><td>75.43%</td></tr>
+<tr><td>Bamban</td><td>6,565</td><td>5,083</td><td>1,450</td><td>77.43%</td></tr>
+<tr><td>Camiling</td><td>12,183</td><td>10,707</td><td>1,404</td><td>87.88%</td></tr>
+<tr><td>Capas</td><td>13,149</td><td>9,952</td><td>3,028</td><td>75.69%</td></tr>
+<tr><td>Concepcion</td><td>16,438</td><td>14,092</td><td>2,051</td><td>85.73%</td></tr>
+<tr><td>Gerona</td><td>12,293</td><td>10,151</td><td>2,090</td><td>82.58%</td></tr>
+<tr><td>La Paz</td><td>7,713</td><td>6,892</td><td>788</td><td>89.36%</td></tr>
+<tr><td>Mayantoc</td><td>4,286</td><td>3,765</td><td>516</td><td>87.84%</td></tr>
+<tr><td>Moncada</td><td>7,890</td><td>6,971</td><td>902</td><td>88.35%</td></tr>
+<tr><td>Paniqui</td><td>12,979</td><td>11,389</td><td>1,554</td><td>87.75%</td></tr>
+<tr><td>Pura</td><td>3,868</td><td>3,297</td><td>563</td><td>85.24%</td></tr>
+<tr><td>Ramos</td><td>2,867</td><td>2,468</td><td>394</td><td>86.08%</td></tr>
+<tr><td>San Clemente</td><td>2,012</td><td>1,836</td><td>171</td><td>91.25%</td></tr>
+<tr><td>San Jose</td><td>3,887</td><td>2,940</td><td>942</td><td>75.64%</td></tr>
+<tr><td>San Manuel</td><td>3,310</td><td>3,007</td><td>297</td><td>90.85%</td></tr>
+<tr><td>Sta. Ignacia</td><td>6,295</td><td>5,263</td><td>990</td><td>83.61%</td></tr>
+<tr><td>Tarlac City</td><td>37,526</td><td>31,687</td><td>5,658</td><td>84.44%</td></tr>
+<tr><td>Victoria</td><td>8,635</td><td>7,521</td><td>1,089</td><td>87.10%</td></tr></tbody></table></div></section>
+  <section class="dashboard-panel" id="youthPanel"><button class="panel-close" onclick="closePanel('youthPanel')">×</button><h2 class="section-title">🧑‍🎓 Youth Economic &amp; Education Engagement by Municipality</h2><p class="section-sub">CBMS 2024 youth (15-30) engagement in employment, education, or training.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('youthPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('youthTable','youth_engagement.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('youthPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="youthTable"><thead><tr><th>Municipality</th><th>Total Youth</th><th>Not in Employ/Educ/Training</th><th>In Employ/Educ/Training</th><th>Not-In Rate</th></tr></thead><tbody><tr><td>Anao</td><td>2,104</td><td>448</td><td>1,656</td><td>21.29%</td></tr>
+<tr><td>Bamban</td><td>14,429</td><td>4,539</td><td>9,890</td><td>31.46%</td></tr>
+<tr><td>Camiling</td><td>15,692</td><td>3,668</td><td>12,024</td><td>23.37%</td></tr>
+<tr><td>Capas</td><td>27,597</td><td>8,277</td><td>19,320</td><td>29.99%</td></tr>
+<tr><td>Concepcion</td><td>30,402</td><td>7,937</td><td>22,465</td><td>26.11%</td></tr>
+<tr><td>Gerona</td><td>16,900</td><td>4,082</td><td>12,818</td><td>24.15%</td></tr>
+<tr><td>La Paz</td><td>12,809</td><td>3,657</td><td>9,152</td><td>28.55%</td></tr>
+<tr><td>Mayantoc</td><td>5,887</td><td>1,432</td><td>4,455</td><td>24.32%</td></tr>
+<tr><td>Moncada</td><td>11,991</td><td>2,867</td><td>9,124</td><td>23.91%</td></tr>
+<tr><td>Paniqui</td><td>17,261</td><td>3,853</td><td>13,408</td><td>22.32%</td></tr>
+<tr><td>Pura</td><td>4,491</td><td>870</td><td>3,621</td><td>19.37%</td></tr>
+<tr><td>Ramos</td><td>4,382</td><td>938</td><td>3,444</td><td>21.41%</td></tr>
+<tr><td>San Clemente</td><td>2,369</td><td>577</td><td>1,792</td><td>24.36%</td></tr>
+<tr><td>San Jose</td><td>7,926</td><td>2,126</td><td>5,800</td><td>26.82%</td></tr>
+<tr><td>San Manuel</td><td>5,415</td><td>1,272</td><td>4,143</td><td>23.49%</td></tr>
+<tr><td>Sta. Ignacia</td><td>9,690</td><td>2,576</td><td>7,114</td><td>26.58%</td></tr>
+<tr><td>Tarlac City</td><td>68,948</td><td>17,398</td><td>51,550</td><td>25.23%</td></tr>
+<tr><td>Victoria</td><td>12,623</td><td>2,878</td><td>9,745</td><td>22.80%</td></tr></tbody></table></div></section>
+  <section class="dashboard-panel" id="welfarePanel"><button class="panel-close" onclick="closePanel('welfarePanel')">×</button><h2 class="section-title">🤝 Food Security &amp; Financial Inclusion by Municipality</h2><p class="section-sub">CBMS 2024 household food-insecurity experience and financial account access — key social welfare vulnerability indicators.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('welfarePanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('welfareTable','social_welfare.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('welfarePanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="welfareTable"><thead><tr><th>Municipality</th><th>Total Households</th><th>Worried About Food Rate</th><th>With Financial Account</th><th>Financial Account Rate</th></tr></thead><tbody><tr><td>Anao</td><td>3,217</td><td>17.72%</td><td>1,984</td><td>61.67%</td></tr>
+<tr><td>Bamban</td><td>20,114</td><td>13.68%</td><td>8,960</td><td>44.55%</td></tr>
+<tr><td>Camiling</td><td>22,314</td><td>26.66%</td><td>13,525</td><td>60.61%</td></tr>
+<tr><td>Capas</td><td>39,389</td><td>29.81%</td><td>22,426</td><td>56.93%</td></tr>
+<tr><td>Concepcion</td><td>41,540</td><td>15.59%</td><td>24,323</td><td>58.55%</td></tr>
+<tr><td>Gerona</td><td>24,540</td><td>46.74%</td><td>15,488</td><td>63.11%</td></tr>
+<tr><td>La Paz</td><td>16,914</td><td>33.81%</td><td>9,033</td><td>53.41%</td></tr>
+<tr><td>Mayantoc</td><td>8,881</td><td>19.61%</td><td>5,452</td><td>61.39%</td></tr>
+<tr><td>Moncada</td><td>17,817</td><td>29.44%</td><td>11,238</td><td>63.07%</td></tr>
+<tr><td>Paniqui</td><td>25,590</td><td>29.62%</td><td>17,075</td><td>66.73%</td></tr>
+<tr><td>Pura</td><td>6,966</td><td>6.90%</td><td>5,133</td><td>73.69%</td></tr>
+<tr><td>Ramos</td><td>6,035</td><td>10.84%</td><td>3,982</td><td>65.98%</td></tr>
+<tr><td>San Clemente</td><td>3,363</td><td>29.08%</td><td>2,108</td><td>62.68%</td></tr>
+<tr><td>San Jose</td><td>10,683</td><td>29.48%</td><td>4,905</td><td>45.91%</td></tr>
+<tr><td>San Manuel</td><td>7,623</td><td>38.65%</td><td>5,031</td><td>66.00%</td></tr>
+<tr><td>Sta. Ignacia</td><td>13,611</td><td>11.99%</td><td>6,220</td><td>45.70%</td></tr>
+<tr><td>Tarlac City</td><td>96,760</td><td>24.56%</td><td>62,149</td><td>64.23%</td></tr>
+<tr><td>Victoria</td><td>17,805</td><td>35.78%</td><td>10,752</td><td>60.39%</td></tr></tbody></table></div></section>
+  <section class="dashboard-panel" id="protectionPanel"><button class="panel-close" onclick="closePanel('protectionPanel')">×</button><h2 class="section-title">🛡️ Perception of Community Safety by Municipality</h2><p class="section-sub">CBMS 2024 respondent perception of safety while walking alone at night in their neighborhood.</p><div class="table-toolbar"><div class="table-search"><span>🔍</span><input oninput="filterTable('protectionPanel',this.value)" placeholder="Search municipality..."></div><div class="table-actions"><button class="btn export-btn" onclick="exportTableCSV('protectionTable','community_safety.csv')">⬇ Export CSV</button><button class="btn print-btn" onclick="printPanel('protectionPanel')">🖨 Print</button></div><span class="table-badge">18 Municipalities • CBMS 2024</span></div><div class="table-wrap"><table class="data-table" id="protectionTable"><thead><tr><th>Municipality</th><th>Total Respondents</th><th>Feel Safe / Very Safe</th><th>Feel Unsafe / Very Unsafe</th><th>Safety Rate</th></tr></thead><tbody><tr><td>Anao</td><td>3,217</td><td>3,212</td><td>5</td><td>99.84%</td></tr>
+<tr><td>Bamban</td><td>20,114</td><td>20,008</td><td>74</td><td>99.47%</td></tr>
+<tr><td>Camiling</td><td>22,314</td><td>21,153</td><td>332</td><td>94.80%</td></tr>
+<tr><td>Capas</td><td>39,389</td><td>38,496</td><td>669</td><td>97.73%</td></tr>
+<tr><td>Concepcion</td><td>41,540</td><td>41,481</td><td>46</td><td>99.86%</td></tr>
+<tr><td>Gerona</td><td>24,540</td><td>23,868</td><td>527</td><td>97.26%</td></tr>
+<tr><td>La Paz</td><td>16,914</td><td>15,847</td><td>597</td><td>93.69%</td></tr>
+<tr><td>Mayantoc</td><td>8,881</td><td>8,866</td><td>10</td><td>99.83%</td></tr>
+<tr><td>Moncada</td><td>17,817</td><td>17,515</td><td>162</td><td>98.30%</td></tr>
+<tr><td>Paniqui</td><td>25,590</td><td>24,712</td><td>163</td><td>96.57%</td></tr>
+<tr><td>Pura</td><td>6,966</td><td>6,943</td><td>14</td><td>99.67%</td></tr>
+<tr><td>Ramos</td><td>6,035</td><td>6,013</td><td>22</td><td>99.64%</td></tr>
+<tr><td>San Clemente</td><td>3,363</td><td>3,281</td><td>48</td><td>97.56%</td></tr>
+<tr><td>San Jose</td><td>10,683</td><td>10,339</td><td>318</td><td>96.78%</td></tr>
+<tr><td>San Manuel</td><td>7,623</td><td>7,073</td><td>65</td><td>92.78%</td></tr>
+<tr><td>Sta. Ignacia</td><td>13,611</td><td>13,388</td><td>130</td><td>98.36%</td></tr>
+<tr><td>Tarlac City</td><td>96,760</td><td>95,707</td><td>748</td><td>98.91%</td></tr>
+<tr><td>Victoria</td><td>17,805</td><td>17,174</td><td>447</td><td>96.46%</td></tr></tbody></table></div></section>
+  <section class="section-card" id="planningRecommendations">
+    <div class="section-head"><div><div class="section-eyebrow">Planning Analysis</div><h2 class="section-title">Social Sector Planning Recommendation</h2><p class="section-sub">Use this as the interpretation block for your dashboard.</p></div></div>
+    <div class="analysis-grid">
+      <div class="analysis-card"><h3>Population &amp; Households</h3><p>Tarlac Province recorded 1,475,227 household members. The population profile uses 383,157 households, while food, finance, and safety indicators use 383,162 responding households. This five-record denominator difference is retained and clearly identified.</p></div>
+      <div class="analysis-card"><h3>Education (TVET/SHS)</h3><p>66.3% of TVET graduates and 45.2% of Senior High School graduates provincewide are employed. Municipalities with lower SHS working rates (e.g. Sta. Ignacia at 37.4%) need stronger job-matching and livelihood bridging for young graduates.</p></div>
+      <div class="analysis-card"><h3>Senior Citizens</h3><p>Of 163,748 senior citizens, 84.5% hold a Senior Citizen ID, 24,337 are recorded without one, and 993 have no reported ID status. San Jose, Anao, and Capas have the lowest ID coverage and should be prioritized for mobile registration drives.</p></div>
+      <div class="analysis-card"><h3>Youth and Welfare</h3><p>25.6% of youth (69,395 of 270,916) are not in employment, education, or training (NEET). 25.9% of households worry about having enough food, while only 60.0% have any formal financial account — signaling a need for combined livelihood, food security, and financial-inclusion programming.</p></div>
+      <div class="analysis-card recommendation"><h3>Recommended Priority Action</h3><ul><li>Prioritize senior citizen ID mobile registration in San Jose, Anao, and Capas, where ID coverage trails the provincial average.</li><li>Target youth NEET reduction programs in Bamban (31.5%) and La Paz (28.6%), the highest not-in-engagement rates.</li><li>Pair TESDA/TVET placement support with municipalities showing low graduate working rates, especially Sta. Ignacia.</li><li>Expand financial-inclusion and food-assistance programs jointly, since both indicators point to overlapping vulnerable households.</li><li>Continue barangay-level CBMS updates to track these indicators against future poverty-reduction targets.</li></ul></div>
+    </div>
+  </section>
+  <footer>PPDO GIS Dashboard · Social Sector Design · Tarlac Province</footer>
+</main>
+<script>
+const sidebar=document.getElementById('sidebar');
+const sidebarToggle=document.getElementById('sidebarToggle');
+const overlay=document.getElementById('overlay');
+sidebarToggle.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('show')});
+overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('show')});
+document.getElementById('sideSearch').addEventListener('input',event=>{
+  const query=event.target.value.toLowerCase().trim();
+  document.querySelectorAll('.sidebar .nav-item').forEach(item=>{
+    item.style.display=item.textContent.toLowerCase().includes(query)?'flex':'none';
+  });
+});
+function showPanel(id){
+  document.querySelectorAll('.dashboard-panel').forEach(panel=>panel.classList.remove('show'));
+  const panel=document.getElementById(id);
+  if(panel){panel.classList.add('show');panel.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function closePanel(id){document.getElementById(id)?.classList.remove('show')}
+function filterTable(panelId,value){
+const panel=document.getElementById(panelId); if(!panel)return;
+const rows=panel.querySelectorAll('tbody tr'); const q=value.toLowerCase().trim();
+rows.forEach(row=>{row.style.display=row.textContent.toLowerCase().includes(q)?'':'none'});
+}
+function exportTableCSV(tableId,filename){
+const table=document.getElementById(tableId); if(!table)return;
+const rows=[...table.querySelectorAll('tr')].filter(row=>row.style.display!=='none');
+const csv=rows.map(row=>[...row.children].map(cell=>'"'+cell.textContent.replaceAll('"','""').trim()+'"').join(',')).join('\n');
+const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=filename; link.click(); URL.revokeObjectURL(link.href);
+}
+function printPanel(panelId){
+const panel=document.getElementById(panelId); if(!panel)return;
+panel.classList.add('print-area'); window.print(); setTimeout(()=>panel.classList.remove('print-area'),500);
+}
+
+/* CBMS indicator comparison. A bar chart is used because these indicators have
+   separate or overlapping denominators and must not be combined into one pie. */
+window.CBMS_SOCIAL_CATEGORIES = window.CBMS_SOCIAL_CATEGORIES || [
+  { label: "Senior Citizens with ID", value: 138418, color: "#16a34a" },
+  { label: "Senior Citizens without ID", value: 24337, color: "#dc2626" },
+  { label: "Youth Not in Educ/Employ/Training", value: 69395, color: "#d97706" },
+  { label: "Youth in Educ/Employ/Training", value: 201521, color: "#0f6b5c" },
+  { label: "Households with Financial Account", value: 229784, color: "#1d4ed8" },
+  { label: "Households without Financial Account", value: 153378, color: "#64748b" }
+];
+let cbmsCategoryDonutChart = null;
+
+function updateCBMSCategoryOverview(rawCategories){
+  const source = Array.isArray(rawCategories) ? rawCategories : window.CBMS_SOCIAL_CATEGORIES;
+  const donutCanvas = document.getElementById('cbmsCategoryDonutChart');
+  const emptyNote = document.getElementById('cbmsEmptyNote');
+  const chartRow = document.getElementById('cbmsChartRow');
+  const legendBox = document.getElementById('cbmsDonutLegend');
+
+  const palette = ['#16a34a','#0f6b5c','#1d4ed8','#0891b2','#d97706','#64748b','#7c3aed','#dc2626'];
+  const categories = (source || [])
+    .map((c, i) => ({ label: c.label, value: Number(c.value) || 0, color: c.color || palette[i % palette.length] }))
+    .filter(c => c.value > 0);
+
+  const totalRecords = categories.reduce((sum, c) => sum + c.value, 0);
+  const hasData = categories.length > 0 && totalRecords > 0;
+
+  const totalEl = document.getElementById('cbmsTotalRecords');
+
+  if (!hasData) {
+    if (cbmsCategoryDonutChart) { cbmsCategoryDonutChart.destroy(); cbmsCategoryDonutChart = null; }
+    if (legendBox) legendBox.innerHTML = '';
+    if (chartRow) chartRow.style.display = 'none';
+    if (emptyNote) emptyNote.style.display = 'block';
+    const lg=document.getElementById('cbmsLargestCategory'); if(lg) lg.innerText='---';
+    const lv=document.getElementById('cbmsLargestValue'); if(lv) lv.innerText='0 records';
+    const sg=document.getElementById('cbmsSmallestCategory'); if(sg) sg.innerText='---';
+    const sv=document.getElementById('cbmsSmallestValue'); if(sv) sv.innerText='0 records';
+    return;
+  }
+
+  if (chartRow) chartRow.style.display = '';
+  if (emptyNote) emptyNote.style.display = 'none';
+
+  categories.sort((a,b)=>b.value-a.value);
+  const largest = categories[0], smallest = categories[categories.length-1];
+
+  if (typeof Chart === 'undefined' || !donutCanvas) return;
+
+  if (cbmsCategoryDonutChart) cbmsCategoryDonutChart.destroy();
+  cbmsCategoryDonutChart = new Chart(donutCanvas, {
+    type: 'bar',
+    data: {
+      labels: categories.map(c=>c.label
+        .replace('Households with Financial Account','With financial account')
+        .replace('Households without Financial Account','Without financial account')
+        .replace('Youth Not in Educ/Employ/Training','Youth not engaged')
+        .replace('Youth in Educ/Employ/Training','Youth engaged')
+        .replace('Senior Citizens with ID','Seniors with ID')
+        .replace('Senior Citizens without ID','Seniors without ID')),
+      datasets: [{
+        data: categories.map(c=>c.value),
+        backgroundColor: categories.map(c=>c.color),
+        borderColor:categories.map(c=>c.color),
+        borderWidth:1,
+        borderRadius:7,
+        barThickness:26,
+        maxBarThickness:30
+      }]
+    },
+    options: {
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:750,easing:'easeOutQuart'},
+      indexAxis:'y',
+      layout:{padding:{top:4,right:18,bottom:0,left:4}},
+      scales:{
+        x:{beginAtZero:true,border:{display:false},grid:{color:'#e8eef0'},ticks:{color:'#64748b',font:{size:11},maxTicksLimit:6,callback:v=>Number(v).toLocaleString()}},
+        y:{border:{display:false},grid:{display:false},ticks:{color:'#334155',font:{size:11,weight:'600'},padding:8}}
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0f172a',
+          titleColor:'#ffffff',
+          bodyColor:'#e2e8f0',
+          padding:12,
+          cornerRadius:10,
+          callbacks:{
+            label:ctx=>{
+              const v=Number(ctx.raw||0);
+              return `${ctx.label}: ${v.toLocaleString()} records`;
+            }
+          }
+        }
+      }
+    },
+    plugins:[]
+  });
+
+  if (legendBox) {
+    legendBox.innerHTML = categories.map(c=>{
+      return `<div class="cbms-legend-item"><span class="cbms-legend-swatch" style="background:${c.color};"></span><span class="cbms-legend-label">${c.label}</span><span class="cbms-legend-value">${c.value.toLocaleString()}</span></div>`;
+    }).join('');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  /* Add the omitted response remainder so every displayed total reconciles. */
+  const seniorHead=document.querySelector('#seniorTable thead tr');
+  if(seniorHead) seniorHead.children[3].insertAdjacentHTML('afterend','<th>Not Reported</th>');
+  document.querySelectorAll('#seniorTable tbody tr').forEach(row=>{
+    const cells=[...row.cells];
+    const number=i=>Number(cells[i].textContent.replaceAll(',',''))||0;
+    const remainder=number(1)-number(2)-number(3);
+    cells[3].insertAdjacentHTML('afterend',`<td>${remainder.toLocaleString()}</td>`);
+  });
+  const safetyHead=document.querySelector('#protectionTable thead tr');
+  if(safetyHead) safetyHead.children[3].insertAdjacentHTML('afterend','<th>Other / Not Applicable</th>');
+  document.querySelectorAll('#protectionTable tbody tr').forEach(row=>{
+    const cells=[...row.cells];
+    const number=i=>Number(cells[i].textContent.replaceAll(',',''))||0;
+    const remainder=number(1)-number(2)-number(3);
+    cells[3].insertAdjacentHTML('afterend',`<td>${remainder.toLocaleString()}</td>`);
+  });
+  updateCBMSCategoryOverview();
+});
+</script>
+</body>
+</html>

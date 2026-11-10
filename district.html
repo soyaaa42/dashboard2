@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tarlac Province District Data Bank</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIINfQ3ynhEO6NlyJQ8/2uWTRpSoYtEMtmM="
+    crossorigin=""
+  >
+
+  <style>
+    :root {
+      --dark-green: #064e3b;
+      --green: #15803d;
+      --light-green: #dcfce7;
+      --background: #f4f7f5;
+      --white: #ffffff;
+      --text: #17251e;
+      --muted: #64746a;
+      --border: #dce6df;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      width: 270px;
+      overflow-y: auto;
+      padding: 22px 15px;
+      color: white;
+      background:
+        radial-gradient(circle at top left, #0b7550, transparent 35%),
+        linear-gradient(160deg, #065f46, #033b2d);
+      transition: transform 0.25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 24px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 55px;
+      height: 55px;
+      flex-shrink: 0;
+      padding: 2px;
+      border: 2px solid rgba(255, 255, 255, 0.82);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--dark-green);
+      font-size: 13px;
+      font-weight: bold;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .brand strong,
+    .brand span {
+      display: block;
+    }
+
+    .brand strong {
+      font-size: 17px;
+    }
+
+    .brand span {
+      margin-top: 3px;
+      color: #d1fae5;
+      font-size: 13px;
+    }
+
+    .navigation-button,
+    .district-button,
+    .municipality-button {
+      width: 100%;
+      border: 0;
+      color: inherit;
+      text-align: left;
+      background: transparent;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .navigation-button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 3px 0;
+      padding: 12px 14px;
+      border-radius: 9px;
+      font-weight: 600;
+    }
+
+    .navigation-button:hover,
+    .navigation-button.active {
+      background: linear-gradient(90deg, #15803d, #16a34a);
+    }
+
+    .navigation-icon {
+      width: 25px;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .district-list {
+      margin: 6px 0 12px 30px;
+    }
+
+    .district-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 0 4px 0 0;
+      border-radius: 7px;
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+
+    .district-button:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .district-button.current {
+      color: #bbf7d0;
+    }
+
+    .district-name {
+      flex: 1;
+      padding: 11px 4px 11px 8px;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .district-toggle {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: inherit;
+      font-size: 13px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .district-toggle:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .district-toggle.open {
+      transform: rotate(180deg);
+    }
+
+    .municipality-list {
+      display: grid;
+      grid-template-rows: 0fr;
+      margin-bottom: 0;
+      transition: grid-template-rows 0.25s ease, margin-bottom 0.25s ease;
+    }
+
+    .municipality-list.open {
+      grid-template-rows: 1fr;
+      margin-bottom: 6px;
+    }
+
+    .municipality-list-inner {
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .municipality-button {
+      position: relative;
+      margin: 2px 0;
+      padding: 8px 8px 8px 29px;
+      border-radius: 7px;
+      color: #e2f1e7;
+      font-size: 14px;
+    }
+
+    .municipality-button::before {
+      position: absolute;
+      top: 12px;
+      left: 11px;
+      width: 8px;
+      height: 8px;
+      border: 1px solid white;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .municipality-button:hover,
+    .municipality-button.selected {
+      background: #15803d;
+      color: white;
+    }
+
+    .municipality-button.selected::before {
+      background: #bbf7d0;
+    }
+
+    .navigation-divider {
+      height: 1px;
+      margin: 15px 8px 8px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .data-period {
+      margin-top: 25px;
+      padding: 15px 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .data-period small,
+    .data-period strong,
+    .data-period span {
+      display: block;
+    }
+
+    .data-period small {
+      color: #86efac;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .data-period strong {
+      margin: 5px 0;
+    }
+
+    .data-period span {
+      color: #bdd6c7;
+      font-size: 11px;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 22px;
+      line-height: 1;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* MAIN CONTENT */
+
+    .main {
+      width: calc(100% - 270px);
+      min-width: 0;
+      margin-left: 270px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-height: 78px;
+      padding: 13px 28px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .breadcrumb {
+      margin: 4px 0 0;
+      color: var(--green);
+      font-size: 13px;
+    }
+
+    .search-container {
+      position: relative;
+      width: min(390px, 38vw);
+      margin-left: auto;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid #cbd5ce;
+      border-radius: 12px;
+      background: #fbfdfb;
+    }
+
+    .search-box span {
+      padding-left: 13px;
+      font-size: 20px;
+    }
+
+    .search-box input {
+      width: 100%;
+      height: 43px;
+      padding: 0 12px;
+      border: 0;
+      outline: none;
+      background: transparent;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 49px;
+      right: 0;
+      left: 0;
+      z-index: 1100;
+      display: none;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 15px 35px rgba(0, 40, 20, 0.15);
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .search-result {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 7px;
+      background: white;
+      text-align: left;
+    }
+
+    .search-result:hover {
+      background: #ecfdf5;
+    }
+
+    .search-result strong,
+    .search-result small {
+      display: block;
+    }
+
+    .search-result small {
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .profile {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #166534, #86b99a);
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .content {
+      max-width: 1500px;
+      margin: auto;
+      padding: 26px 28px 40px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--green);
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+    }
+
+    .page-heading h2 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .page-heading-description {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+    }
+
+    .district-label {
+      padding: 9px 17px;
+      border: 1px solid var(--green);
+      border-radius: 25px;
+      background: #f0fdf4;
+      color: var(--green);
+    }
+
+    /* KPI CARDS */
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .kpi-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: white;
+      box-shadow: 0 3px 12px rgba(0, 50, 20, 0.05);
+    }
+
+    .kpi-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--light-green);
+      color: var(--green);
+      font-size: 25px;
+    }
+
+    .kpi-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kpi-card strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 24px;
+    }
+
+    /* DASHBOARD */
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 1fr;
+      gap: 15px;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+      box-shadow: 0 3px 15px rgba(0, 50, 20, 0.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card-header small {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--green);
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .card-header select {
+      padding: 8px 10px;
+      border: 1px solid #cbd5ce;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .text-button {
+      border: 0;
+      color: var(--green);
+      background: transparent;
+      font-weight: bold;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 10px;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      color: var(--muted);
+      background: transparent;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      border-bottom-color: var(--green);
+      color: var(--dark-green);
+      font-weight: bold;
+    }
+
+    .performance-header,
+    .performance-item {
+      display: grid;
+      grid-template-columns: 120px 1fr 42px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .performance-header {
+      padding: 12px 7px 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .performance-header span:nth-child(2) {
+      grid-column: 2 / 4;
+      text-align: right;
+    }
+
+    .performance-item {
+      width: 100%;
+      padding: 9px 7px;
+      border: 0;
+      border-radius: 7px;
+      background: white;
+      text-align: left;
+    }
+
+    .performance-item:hover,
+    .performance-item.selected {
+      background: #ecfdf5;
+    }
+
+    .progress-bar,
+    .project-progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #e5e7eb;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #16a34a, #15803d);
+    }
+
+    .performance-value {
+      text-align: right;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* DISTRICT MAP */
+
+    .map-area {
+      position: relative;
+      min-height: 330px;
+      overflow: hidden;
+      border-radius: 11px;
+      background:
+        radial-gradient(circle at center, #f8fcf9, #edf4ef);
+    }
+
+    #districtMap {
+      width: 100%;
+      height: 390px;
+      min-height: 330px;
+      background: #edf4ef;
+    }
+
+    .district-map-label {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0, 35, 18, 0.9);
+    }
+
+    .leaflet-tooltip.district-tooltip {
+      border: 0;
+      border-radius: 8px;
+      background: rgba(6, 78, 59, 0.94);
+      color: white;
+      box-shadow: 0 5px 16px rgba(0, 35, 18, 0.22);
+    }
+
+    .province-shape {
+      position: absolute;
+      top: 18px;
+      left: 46%;
+      display: grid;
+      grid-template-rows: 1fr 0.85fr 0.75fr;
+      gap: 2px;
+      width: 185px;
+      height: 285px;
+      overflow: hidden;
+      transform: translateX(-50%);
+      clip-path: polygon(
+        35% 0%, 59% 3%, 67% 11%, 82% 15%,
+        93% 27%, 84% 38%, 96% 51%, 83% 64%,
+        88% 74%, 73% 82%, 66% 96%, 50% 100%,
+        34% 94%, 25% 82%, 11% 73%, 19% 58%,
+        8% 44%, 14% 30%, 5% 18%, 22% 9%
+      );
+      filter: drop-shadow(0 8px 7px rgba(0, 50, 20, 0.2));
+    }
+
+    .map-district {
+      display: grid;
+      place-items: center;
+      border: 0;
+      color: #14532d;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .map-district:nth-child(1) {
+      background: #86c891;
+    }
+
+    .map-district:nth-child(2) {
+      background: #b4dcb4;
+    }
+
+    .map-district:nth-child(3) {
+      background: #d1e8ce;
+    }
+
+    .map-district:hover,
+    .map-district.active {
+      background: #15803d;
+      color: white;
+    }
+
+    .map-legend {
+      position: absolute;
+      right: 15px;
+      bottom: 18px;
+      z-index: 500;
+      display: grid;
+      gap: 8px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--muted);
+      font-size: 11px;
+      pointer-events: none;
+    }
+
+    .map-legend span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-color {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+    }
+
+    /* PROJECTS */
+
+    .project-table {
+      overflow-x: auto;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 1.5fr 0.85fr 1fr 0.65fr;
+      align-items: center;
+      gap: 10px;
+      min-width: 570px;
+      padding: 11px 5px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .project-row.header {
+      border-top: 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .project-name strong,
+    .project-name small {
+      display: block;
+    }
+
+    .project-name small {
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .progress-text {
+      display: grid;
+      grid-template-columns: 1fr 32px;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status {
+      justify-self: start;
+      padding: 5px 8px;
+      border: 1px solid #f1be55;
+      border-radius: 20px;
+      background: #fff8e8;
+      color: #9a6500;
+    }
+
+    /* PROFILE */
+
+    .profile-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-radius: 11px;
+      background: #ecfdf5;
+    }
+
+    .profile-summary strong,
+    .profile-summary span {
+      display: block;
+    }
+
+    .profile-summary strong {
+      color: var(--dark-green);
+      font-size: 30px;
+    }
+
+    .profile-summary span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .score-circle {
+      display: grid;
+      place-items: center;
+      width: 65px;
+      height: 65px;
+      border: 8px solid #22c55e;
+      border-radius: 50%;
+      color: var(--dark-green);
+      font-weight: bold;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .profile-detail {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .profile-detail span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .profile-detail strong {
+      font-size: 13px;
+    }
+
+    .menu-button,
+    .overlay {
+      display: none;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1100px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close,
+      .overlay {
+        display: block;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 900;
+        border: 0;
+        background: rgba(0, 25, 15, 0.65);
+      }
+
+      .menu-button {
+        position: fixed;
+        top: 17px;
+        left: 13px;
+        z-index: 600;
+        display: block;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--dark-green);
+        color: white;
+        font-size: 20px;
+      }
+
+      .main {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .topbar {
+        flex-wrap: wrap;
+        padding-left: 66px;
+      }
+
+      .topbar h1 {
+        font-size: 16px;
+      }
+
+      .search-container {
+        order: 5;
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 20px 14px;
+      }
+
+      .page-heading h2 {
+        font-size: 25px;
+      }
+
+      .district-label {
+        padding: 7px 10px;
+        font-size: 11px;
+      }
+
+      .profile-details {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .kpi-card {
+        padding: 13px;
+      }
+
+      .kpi-icon {
+        display: none;
+      }
+
+      .kpi-card strong {
+        font-size: 18px;
+      }
+
+      .performance-header,
+      .performance-item {
+        grid-template-columns: 90px 1fr 35px;
+      }
+
+      .province-shape {
+        left: 39%;
+        width: 150px;
+        height: 255px;
+      }
+
+      .map-legend {
+        right: 5px;
+      }
+    }
+
+    /* PROFESSIONAL UI REFINEMENT */
+
+    body {
+      background:
+        linear-gradient(180deg, #eef6f1 0, #f7faf8 340px, #f4f7f5 100%);
+    }
+
+    .sidebar {
+      width: 258px;
+      padding: 20px 14px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 12px 0 32px rgba(3, 59, 45, 0.1);
+    }
+
+    .main {
+      width: calc(100% - 258px);
+      margin-left: 258px;
+    }
+
+    .brand {
+      margin-bottom: 10px;
+      padding: 2px 8px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .logo {
+      width: 58px;
+      height: 58px;
+      border: 2px solid rgba(255, 255, 255, 0.88);
+      box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.13),
+        0 7px 18px rgba(0, 30, 18, 0.22);
+    }
+
+    .navigation-button {
+      min-height: 46px;
+      padding: 11px 13px;
+      color: #e6f6ed;
+    }
+
+    .navigation-button.active {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: inset 3px 0 #86efac;
+    }
+
+    .topbar {
+      min-height: 76px;
+      padding: 12px 30px;
+      border-bottom-color: #d9e7de;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 5px 22px rgba(6, 78, 59, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar h1 {
+      color: #073d2e;
+      font-size: 20px;
+      letter-spacing: -0.2px;
+    }
+
+    .search-box {
+      border-color: #d4e2d9;
+      background: #f7faf8;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: #22a55a;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(34, 165, 90, 0.1);
+    }
+
+    .content {
+      padding-top: 30px;
+    }
+
+    .page-heading {
+      align-items: center;
+      margin-bottom: 22px;
+      padding: 20px 22px;
+      border: 1px solid #dce8e0;
+      border-radius: 16px;
+      background:
+        linear-gradient(105deg, rgba(255,255,255,0.98), rgba(236,253,245,0.9));
+      box-shadow: 0 8px 24px rgba(6, 78, 59, 0.06);
+    }
+
+    .page-heading h2 {
+      color: #073d2e;
+      font-size: clamp(25px, 3vw, 34px);
+      letter-spacing: -0.7px;
+    }
+
+    .page-heading-description {
+      line-height: 1.5;
+    }
+
+    .district-label {
+      flex-shrink: 0;
+      border: 0;
+      background: #dff7e8;
+      box-shadow: inset 0 0 0 1px #a7dfba;
+      font-weight: 700;
+    }
+
+    .kpi-grid {
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 102px;
+      border-color: #dce8e0;
+      border-radius: 15px;
+      box-shadow: 0 8px 22px rgba(6, 78, 59, 0.055);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(#22c55e, #0f766e);
+      content: "";
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(6, 78, 59, 0.1);
+    }
+
+    .kpi-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(145deg, #e7f9ed, #d4f2df);
+    }
+
+    .kpi-card strong {
+      color: #073d2e;
+      font-size: 25px;
+      letter-spacing: -0.5px;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      overflow: hidden;
+      padding: 20px;
+      border-color: #dce8e0;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(6, 78, 59, 0.06);
+    }
+
+    .card-header {
+      min-height: 44px;
+      margin-bottom: 14px;
+    }
+
+    .card-header h3 {
+      color: #123e30;
+      font-size: 18px;
+    }
+
+    .card-header select {
+      min-width: 122px;
+      outline: none;
+    }
+
+    .card-header select:focus {
+      border-color: #22a55a;
+      box-shadow: 0 0 0 3px rgba(34, 165, 90, 0.1);
+    }
+
+    .tabs {
+      scrollbar-width: thin;
+    }
+
+    .tab {
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .tab:hover {
+      color: var(--dark-green);
+      background: #f0faf4;
+    }
+
+    .performance-item {
+      min-height: 43px;
+      border-bottom: 1px solid #edf2ee;
+    }
+
+    .map-area {
+      border: 1px solid #d6e4db;
+      border-radius: 13px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+    }
+
+    #districtMap {
+      height: 425px;
+    }
+
+    .map-legend {
+      right: 12px;
+      bottom: 12px;
+      border: 1px solid rgba(6, 78, 59, 0.12);
+      box-shadow: 0 8px 20px rgba(6, 78, 59, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .leaflet-control-zoom a {
+      color: #07533e;
+    }
+
+    .project-row:not(.header):hover {
+      background: #f4fbf6;
+    }
+
+    .profile-summary {
+      background: linear-gradient(120deg, #e8f9ee, #f4fcf7);
+    }
+
+    @media (max-width: 1100px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #districtMap {
+        height: 400px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .main {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .page-heading {
+        padding: 17px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .kpi-card {
+        min-height: 88px;
+        padding: 14px;
+      }
+
+      .kpi-icon {
+        display: none;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      #districtMap {
+        height: 350px;
+      }
+
+      .map-legend {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="menu-button" id="menuButton">☰</button>
+  <button class="overlay" id="overlay" aria-label="Close sidebar"></button>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+      <button class="sidebar-close" id="closeSidebar">×</button>
+
+      <div class="brand">
+        <img
+          class="logo"
+          src="tarlac_official_seal_transparent.png"
+          alt="Official Seal of the Province of Tarlac"
+        >
+
+        <div>
+          <strong>Tarlac Provincial</strong>
+          <span>District Data Bank</span>
+        </div>
+      </div>
+
+      <nav>
+
+        <a class="navigation-button" href="homepage.html">
+          <span class="navigation-icon">🏠</span>
+          Home Page
+        </a>
+
+        <a class="navigation-button" href="dashboardupdated.html">
+          <span class="navigation-icon">🏠</span>
+          Dashboard
+        </a>
+
+        <a class="navigation-button" href="dashboardupdated.html">
+        <span class="icon">🗺️</span>
+        <span class="label">Data Map</span>
+        </a>
+
+        <a class="navigation-button active" href="district.html">
+          <span class="navigation-icon">🗺️</span>
+          District Data Bank
+        </a>
+
+        <div class="district-list" id="districtList"></div>
+
+        <div class="navigation-divider"></div>
+
+        <a class="navigation-button" href="infrastructure.html">
+          <span class="navigation-icon">🏗️</span>
+          Infrastructure
+        </a>
+
+        <a class="navigation-button" href="social-sector.html">
+          <span class="navigation-icon">👥</span>
+          Social Services
+        </a>
+
+        <a class="navigation-button" href="economic-sector.html">
+          <span class="navigation-icon">▤</span>
+          Economic Sector
+        </a>
+
+        <a class="navigation-button" href="institutional.html">
+          <span class="navigation-icon">🏛️</span>
+          Institutional
+        </a>
+        
+        <a class="navigation-button" href="environment.html">
+          <span class="navigation-icon">🌱</span>
+          Environment
+        </a>
+
+      </nav>
+
+      <div class="data-period">
+        <small>DATA PERIOD</small>
+        <strong>CBMS 2024</strong>
+        <span>Planning reference dashboard</span>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <header class="topbar">
+
+        <div>
+          <h1>Tarlac Province District Data Bank</h1>
+          <p class="breadcrumb" id="breadcrumb">
+            Province / District 1
+          </p>
+        </div>
+
+        <div class="search-container">
+          <div class="search-box">
+            <span>⌕</span>
+
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Search municipality..."
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div class="profile">PPDO</div>
+      </header>
+
+      <div class="content">
+
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow">DISTRICT DEVELOPMENT DATA BANK</p>
+
+            <h2 id="pageTitle">District 1</h2>
+
+            <span class="page-heading-description">
+              Consolidated data bank of Tarlac municipalities
+            </span>
+          </div>
+
+          <button class="district-label" id="districtLabel">
+            10 Municipalities
+          </button>
+        </section>
+
+        <!-- KPI CARDS -->
+        <section class="kpi-grid">
+
+          <article class="kpi-card">
+            <div class="kpi-icon">-</div>
+
+            <div>
+              <span>Population</span>
+              <strong id="populationValue">0</strong>
+            </div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-icon">--</div>
+
+            <div>
+              <span>Households</span>
+              <strong id="householdsValue">0</strong>
+            </div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-icon">--</div>
+
+            <div>
+              <span>Barangays</span>
+              <strong id="barangaysValue">0</strong>
+            </div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-icon">--</div>
+
+            <div>
+              <span>Active Projects</span>
+              <strong id="projectsValue">0</strong>
+            </div>
+          </article>
+
+        </section>
+
+        <section class="dashboard-grid">
+
+          <!-- PERFORMANCE -->
+          <class="card">
+
+            <div class="card-header">
+              <div>
+                <small>PERFORMANCE</small>
+                <h3 id="performanceTitle">
+                  District 1 Municipal Performance
+                </h3>
+              </div>
+            </div>
+
+            <div="tabs" id="tabs">
+              <button class="tab active" data-category="Overview">
+                Overview
+              </button>
+
+              <button class="tab" data-category="Employment">
+                Employment
+              </button>
+
+              <button class="tab" data-category="Electricity">
+                Electricity
+              </button>
+              
+              <button class="tab" data-category="Without Electricity">
+                Without Electricity
+              </button>
+
+              <button class="tab" data-category="Internet">
+                Internet
+              </button>
+
+              <button class="tab" data-category="Water">
+                Water
+              </button>
+
+              <button class="tab" data-category="Sanitation">
+                Sanitation
+              </button>
+
+              <button class="tab" data-category="Senior without Id">
+                Senior Without Id
+              </button>
+              
+              <button class="tab" data-category="School youth">
+                School Youth
+              </button>
+              
+              <button class="tab" data-category="Labor Force">
+                Labor Force
+              </button>
+            </div>
+
+            <div class="performance-header">
+              <span>Municipality</span>
+              <span id="performanceHeading">Data Bank Overview</span>
+            </div>
+
+            <div id="performanceList"></div>
+
+          </article>
+
+          <!-- MAP -->
+          <article class="card">
+
+            <div class="card-header">
+              <div>
+                <small>GEOGRAPHIC VIEW</small>
+                <h3>District Map</h3>
+              </div>
+
+              <select id="districtSelect">
+                <option value="1">District 1</option>
+                <option value="2">District 2</option>
+                <option value="3">District 3</option>
+              </select>
+            </div>
+
+            <div class="map-area">
+
+              <div
+                id="districtMap"
+                role="application"
+                aria-label="Interactive map of Tarlac legislative districts"
+              ></div>
+
+              <div class="map-legend">
+                <span>
+                  <i
+                    class="legend-color"
+                    style="background:#86c891"
+                  ></i>
+                  District 1
+                </span>
+
+                <span>
+                  <i
+                    class="legend-color"
+                    style="background:#b4dcb4"
+                  ></i>
+                  District 2
+                </span>
+
+                <span>
+                  <i class="legend-color" style="background:#d1e8ce"></i>
+                  District 3
+                </span>
+
+                <small>Click a GeoJSON district to explore</small>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- DISTRICT COMPARISON CHART -->
+          <article class="card">
+
+            <div class="card-header">
+              <div>
+                <small>CBMS 2024 CONSOLIDATED DATA</small>
+                <h3>District Comparison</h3>
+              </div>
+
+              <select id="chartMetricSelect">
+                <option value="population">Population</option>
+                <option value="households">Households</option>
+                <option value="barangays">Barangays</option>
+                <option value="electricity">Electricity Access</option>
+                <option value="internet">Internet Access</option>
+                <option value="water">Basic Water Access</option>
+                <option value="sanitation">Basic Sanitation</option>
+                <option value="performance">Basic Services Index</option>
+              </select>
+            </div>
+
+            <div style="position:relative;height:300px;">
+              <canvas id="districtChart"></canvas>
+            </div>
+
+            <p style="margin:10px 2px 0;color:var(--muted);font-size:11px;">
+              Source: 2024 Tarlac Province CBMS consolidated and final data.
+              Percentages are household-weighted averages across each district's
+              municipalities/city.
+            </p>
+
+          </article>
+
+          <!-- PROJECTS -->
+          <article class="card">
+
+            <div class="card-header">
+              <div>
+                <small>IMPLEMENTATION</small>
+                <h3>Priority Projects</h3>
+              </div>
+
+              <button class="text-button">View all ›</button>
+            </div>
+
+            <div class="project-table">
+
+              <div class="project-row header">
+                <span>Project</span>
+                <span>Municipality</span>
+                <span>Progress</span>
+                <span>Status</span>
+              </div>
+
+              <div class="project-row">
+                <span class="project-name">
+                  <strong>Farm-to-Market Road</strong>
+                  <small>District development program</small>
+                </span>
+
+                <span>Camiling</span>
+
+                <span class="progress-text">
+                  <span class="project-progress">
+                    <i
+                      class="progress-fill"
+                      style="display:block;width:78%"
+                    ></i>
+                  </span>
+
+                  78%
+                </span>
+
+                <span class="status">Ongoing</span>
+              </div>
+
+              <div class="project-row">
+                <span class="project-name">
+                  <strong>Potable Water System</strong>
+                  <small>Water supply improvement</small>
+                </span>
+
+                <span>Gerona</span>
+
+                <span class="progress-text">
+                  <span class="project-progress">
+                    <i
+                      class="progress-fill"
+                      style="display:block;width:65%"
+                    ></i>
+                  </span>
+
+                  65%
+                </span>
+
+                <span class="status">Ongoing</span>
+              </div>
+
+              <div class="project-row">
+                <span class="project-name">
+                  <strong>Health Center Upgrade</strong>
+                  <small>Health service improvement</small>
+                </span>
+
+                <span>Paniqui</span>
+
+                <span class="progress-text">
+                  <span class="project-progress">
+                    <i
+                      class="progress-fill"
+                      style="display:block;width:84%"
+                    ></i>
+                  </span>
+
+                  84%
+                </span>
+
+                <span class="status">Ongoing</span>
+              </div>
+
+            </div>
+          </article>
+
+          <!-- SELECTED AREA -->
+          <article class="card">
+
+            <div class="card-header">
+              <div>
+                <small>SELECTED AREA</small>
+                <h3 id="profileTitle">District 1 Data Bank Profile</h3>
+              </div>
+
+              <button class="text-button" id="resetButton">
+                Reset
+              </button>
+            </div>
+
+            <div class="profile-summary">
+              <div>
+                <strong id="performanceScore">0%</strong>
+                <span>Development performance</span>
+              </div>
+
+              <div class="score-circle" id="scoreCircle">
+                0
+              </div>
+            </div>
+
+            <div class="profile-details">
+
+              <div class="profile-detail">
+                <span>Average household size</span>
+                <strong id="householdSize">0</strong>
+              </div>
+
+              <div class="profile-detail">
+                <span>Project coverage</span>
+                <strong id="projectCoverage">Province-led</strong>
+              </div>
+
+              <div class="profile-detail">
+                <span>Data level</span>
+                <strong id="dataLevel">District</strong>
+              </div>
+
+            </div>
+          </article>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+
+  <script>
+    /*
+      IMPORTANT:
+      These values are demonstration data.
+
+      Replace or verify the figures using the official
+      2024 Tarlac CBMS spreadsheet before publishing.
+    */
+
+    /*
+      Real 2024 Tarlac Province CBMS consolidated figures.
+
+      population / households -> "T01 Summary Statistics" sheet of the
+      2024 CBMS Consolidated workbook (covered population and responding
+      households per municipality/city).
+
+      barangays -> count of distinct barangays reporting in the CBMS
+      barangay-level indicator sheets.
+
+      electricity / internet / water / sanitation -> household-weighted
+      percentage of the population with access to electricity, home
+      internet, basic (Level III/safely managed) drinking water, and
+      basic sanitation, aggregated from barangay-level CBMS indicator
+      sheets in the Final CBMS Data workbook.
+
+      performance -> simple average of the four access indicators above,
+      used as a "Basic Services Index" for the dashboard (replaces the
+      earlier placeholder score).
+
+      lat/lng -> approximate town-center coordinates, for map reference
+      only (not official PSA/NAMRIA points).
+    */
+
+    const districts = [
+      {
+        id: 1,
+        municipalities: [
+          {
+            name: "Anao",
+            barangays: 18,
+            population: 12504,
+            households: 3217,
+            electricity: 97.7,
+            internet: 72.1,
+            water: 100.0,
+            sanitation: 95.2,
+            performance: 91,
+            lat: 15.6708,
+            lng: 120.6183
+          },
+          {
+            name: "Camiling",
+            barangays: 61,
+            population: 87494,
+            households: 22314,
+            electricity: 98.4,
+            internet: 62.0,
+            water: 99.8,
+            sanitation: 82.1,
+            performance: 86,
+            lat: 15.6742,
+            lng: 120.4136
+          },
+          {
+            name: "Mayantoc",
+            barangays: 44,
+            population: 95626,
+            households: 24540,
+            electricity: 98.8,
+            internet: 42.2,
+            water: 99.7,
+            sanitation: 83.8,
+            performance: 81,
+            lat: 15.5745,
+            lng: 120.5808
+          },
+          {
+            name: "Moncada",
+            barangays: 37,
+            population: 65611,
+            households: 17817,
+            electricity: 96.5,
+            internet: 50.8,
+            water: 99.8,
+            sanitation: 74.3,
+            performance: 80,
+            lat: 15.7167,
+            lng: 120.5667
+          },
+          {
+            name: "Paniqui",
+            barangays: 35,
+            population: 99717,
+            households: 25590,
+            electricity: 98.4,
+            internet: 59.1,
+            water: 99.0,
+            sanitation: 79.0,
+            performance: 84,
+            lat: 15.6667,
+            lng: 120.5833
+          },
+          {
+            name: "Pura",
+            barangays: 16,
+            population: 26842,
+            households: 6966,
+            electricity: 98.8,
+            internet: 69.1,
+            water: 99.8,
+            sanitation: 83.5,
+            performance: 88,
+            lat: 15.5833,
+            lng: 120.5500
+          },
+          {
+            name: "Ramos",
+            barangays: 9,
+            population: 23128,
+            households: 6035,
+            electricity: 98.9,
+            internet: 63.1,
+            water: 99.9,
+            sanitation: 79.7,
+            performance: 85,
+            lat: 15.7500,
+            lng: 120.5667
+          },
+          {
+            name: "San Clemente",
+            barangays: 12,
+            population: 13645,
+            households: 3363,
+            electricity: 97.8,
+            internet: 41.0,
+            water: 94.6,
+            sanitation: 67.4,
+            performance: 75,
+            lat: 15.7333,
+            lng: 120.4333
+          },
+          {
+            name: "San Manuel",
+            barangays: 15,
+            population: 29361,
+            households: 7623,
+            electricity: 97.9,
+            internet: 70.8,
+            water: 96.6,
+            sanitation: 70.6,
+            performance: 84,
+            lat: 15.7667,
+            lng: 120.5167
+          },
+          {
+            name: "Santa Ignacia",
+            barangays: 24,
+            population: 51928,
+            households: 13611,
+            electricity: 98.3,
+            internet: 49.0,
+            water: 99.9,
+            sanitation: 77.5,
+            performance: 81,
+            lat: 15.6333,
+            lng: 120.4667
+          }
+        ]
+      },
+
+      {
+        id: 2,
+        municipalities: [
+          {
+            name: "City of Tarlac",
+            barangays: 75,
+            population: 369961,
+            households: 96760,
+            electricity: 98.6,
+            internet: 54.6,
+            water: 99.7,
+            sanitation: 77.7,
+            performance: 83,
+            lat: 15.4802,
+            lng: 120.5979
+          },
+
+          {
+            name: "Gerona",
+            barangays: 44,
+            population: 95626,
+            households: 24540,
+            electricity: 98.8,
+            internet: 42.2,
+            water: 99.7,
+            sanitation: 83.8,
+            performance: 81,
+            lat: 15.5745,
+            lng: 120.5808
+          },
+
+          {
+            name: "La Paz",
+            barangays: 21,
+            population: 68473,
+            households: 16914,
+            electricity: 98.6,
+            internet: 46.9,
+            water: 98.4,
+            sanitation: 75.4,
+            performance: 80,
+            lat: 15.4500,
+            lng: 120.6667
+          },
+
+          {
+            name: "Victoria",
+            barangays: 26,
+            population: 69644,
+            households: 17805,
+            electricity: 97.7,
+            internet: 47.6,
+            water: 99.7,
+            sanitation: 83.8,
+            performance: 82,
+            lat: 15.5667,
+            lng: 120.6667
+          }
+        ]
+      },
+
+      {
+        id: 3,
+        municipalities: [
+          {
+            name: "Bamban",
+            barangays: 15,
+            population: 74415,
+            households: 20114,
+            electricity: 98.3,
+            internet: 40.5,
+            water: 99.3,
+            sanitation: 89.0,
+            performance: 82,
+            lat: 15.3333,
+            lng: 120.5667
+          },
+          {
+            name: "Capas",
+            barangays: 20,
+            population: 146359,
+            households: 39389,
+            electricity: 95.0,
+            internet: 45.1,
+            water: 98.4,
+            sanitation: 76.3,
+            performance: 79,
+            lat: 15.3500,
+            lng: 120.6000
+          },
+          {
+            name: "Concepcion",
+            barangays: 45,
+            population: 165140,
+            households: 41540,
+            electricity: 99.7,
+            internet: 50.9,
+            water: 99.4,
+            sanitation: 75.7,
+            performance: 81,
+            lat: 15.2667,
+            lng: 120.6333
+          },
+          {
+            name: "Mayantoc",
+            barangays: 24,
+            population: 32616,
+            households: 8881,
+            electricity: 95.1,
+            internet: 53.2,
+            water: 99.4,
+            sanitation: 74.0,
+            performance: 80,
+            lat: 15.6167,
+            lng: 120.3500
+          },
+          {
+            name: "San Jose",
+            barangays: 13,
+            population: 42763,
+            households: 10683,
+            electricity: 92.5,
+            internet: 32.8,
+            water: 98.3,
+            sanitation: 70.5,
+            performance: 74,
+            lat: 15.5333,
+            lng: 120.3333
+          }
+        ]
+      }
+    ];
+
+    /*
+      Embedded district GeoJSON.
+      The polygons provide a district-level planning view and can later be
+      replaced with official PSA/NAMRIA boundaries without changing the map
+      code below. GeoJSON coordinates use [longitude, latitude].
+    */
+    const districtGeoJSON = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {
+            district_id: 1,
+            name: "District 1",
+            municipalities: 10
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [120.285, 15.725], [120.415, 15.885],
+              [120.565, 15.940], [120.720, 15.875],
+              [120.770, 15.690], [120.670, 15.535],
+              [120.495, 15.500], [120.330, 15.575],
+              [120.285, 15.725]
+            ]]
+          }
+        },
+        {
+          type: "Feature",
+          properties: {
+            district_id: 2,
+            name: "District 2",
+            municipalities: 3
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [120.455, 15.565], [120.670, 15.535],
+              [120.790, 15.520], [120.835, 15.390],
+              [120.740, 15.300], [120.565, 15.335],
+              [120.455, 15.565]
+            ]]
+          }
+        },
+        {
+          type: "Feature",
+          properties: {
+            district_id: 3,
+            name: "District 3",
+            municipalities: 5
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [120.245, 15.590], [120.455, 15.565],
+              [120.565, 15.335], [120.680, 15.185],
+              [120.610, 15.040], [120.405, 15.020],
+              [120.235, 15.190], [120.180, 15.390],
+              [120.245, 15.590]
+            ]]
+          }
+        }
+      ]
+    };
+
+    const districtColors = {
+      1: "#4f9f60",
+      2: "#7fbd83",
+      3: "#9fcf9b"
+    };
+
+    let districtMap;
+    let districtGeoJSONLayer;
+
+    let selectedDistrictId = 1;
+    let selectedMunicipality = null;
+    let activeCategory = "Overview";
+    const expandedDistricts = new Set([selectedDistrictId]);
+
+    const districtList = document.getElementById("districtList");
+    const districtSelect = document.getElementById("districtSelect");
+
+    const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
+
+    const populationValue =
+      document.getElementById("populationValue");
+
+    const householdsValue =
+      document.getElementById("householdsValue");
+
+    const barangaysValue =
+      document.getElementById("barangaysValue");
+
+    const projectsValue =
+      document.getElementById("projectsValue");
+
+    const pageTitle = document.getElementById("pageTitle");
+    const districtLabel = document.getElementById("districtLabel");
+    const breadcrumb = document.getElementById("breadcrumb");
+
+    const performanceTitle =
+      document.getElementById("performanceTitle");
+
+    const performanceHeading =
+      document.getElementById("performanceHeading");
+
+    const performanceList =
+      document.getElementById("performanceList");
+
+    const profileTitle =
+      document.getElementById("profileTitle");
+
+    const performanceScore =
+      document.getElementById("performanceScore");
+
+    const scoreCircle =
+      document.getElementById("scoreCircle");
+
+    const householdSize =
+      document.getElementById("householdSize");
+
+    const projectCoverage =
+      document.getElementById("projectCoverage");
+
+    const dataLevel =
+      document.getElementById("dataLevel");
+
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    function numberFormat(number) {
+      return Number(number).toLocaleString("en-PH");
+    }
+
+    function getDistrict(id) {
+      return districts.find(
+        district => district.id === Number(id)
+      );
+    }
+
+    function getMunicipality(name) {
+      for (const district of districts) {
+        const municipality = district.municipalities.find(
+          item => item.name === name
+        );
+
+        if (municipality) {
+          return {
+            ...municipality,
+            districtId: district.id
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function calculateDistrictTotals(district) {
+      return district.municipalities.reduce(
+        (total, municipality) => {
+          total.population += municipality.population;
+          total.households += municipality.households;
+          total.barangays += municipality.barangays;
+          total.performance += municipality.performance;
+
+          return total;
+        },
+        {
+          population: 0,
+          households: 0,
+          barangays: 0,
+          performance: 0
+        }
+      );
+    }
+
+    const chartMetricLabels = {
+      population: "Population",
+      households: "Households",
+      barangays: "Barangays",
+      electricity: "Electricity Access (%)",
+      internet: "Internet Access (%)",
+      water: "Basic Water Access (%)",
+      sanitation: "Basic Sanitation (%)",
+      performance: "Basic Services Index (%)"
+    };
+
+    function getDistrictMetrics(district) {
+      const totals = district.municipalities.reduce(
+        (total, municipality) => {
+          total.population += municipality.population;
+          total.households += municipality.households;
+          total.barangays += municipality.barangays;
+
+          // household-weighted sums for the percentage indicators
+          total.electricity +=
+            municipality.electricity * municipality.households;
+          total.internet +=
+            municipality.internet * municipality.households;
+          total.water +=
+            municipality.water * municipality.households;
+          total.sanitation +=
+            municipality.sanitation * municipality.households;
+          total.performance +=
+            municipality.performance * municipality.households;
+
+          return total;
+        },
+        {
+          population: 0,
+          households: 0,
+          barangays: 0,
+          electricity: 0,
+          internet: 0,
+          water: 0,
+          sanitation: 0,
+          performance: 0
+        }
+      );
+
+      const hh = totals.households || 1;
+
+      return {
+        population: totals.population,
+        households: totals.households,
+        barangays: totals.barangays,
+        electricity: Math.round((totals.electricity / hh) * 10) / 10,
+        internet: Math.round((totals.internet / hh) * 10) / 10,
+        water: Math.round((totals.water / hh) * 10) / 10,
+        sanitation: Math.round((totals.sanitation / hh) * 10) / 10,
+        performance: Math.round(totals.performance / hh)
+      };
+    }
+
+    let districtChart;
+
+    function renderDistrictChart() {
+      const canvas = document.getElementById("districtChart");
+
+      if (!canvas) return;
+
+      if (typeof Chart === "undefined") {
+        canvas.parentElement.innerHTML =
+          '<p style="color:#dc2626;padding:12px;">' +
+          "Chart library failed to load — check your internet " +
+          "connection and refresh the page." +
+          "</p>";
+        return;
+      }
+
+      const metric = document.getElementById("chartMetricSelect").value;
+
+      const labels = districts.map(
+        district => `District ${district.id}`
+      );
+
+      const values = districts.map(
+        district => getDistrictMetrics(district)[metric]
+      );
+
+      const barColors = districts.map(district =>
+        district.id === selectedDistrictId
+          ? "#15803d"
+          : "#a7d7ae"
+      );
+
+      if (districtChart) {
+        districtChart.data.labels = labels;
+        districtChart.data.datasets[0].data = values;
+        districtChart.data.datasets[0].backgroundColor = barColors;
+        districtChart.data.datasets[0].label =
+          chartMetricLabels[metric];
+        districtChart.update();
+        return;
+      }
+
+      districtChart = new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: chartMetricLabels[metric],
+            data: values,
+            backgroundColor: barColors,
+            borderRadius: 6,
+            maxBarThickness: 70
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          onClick(event, elements) {
+            if (elements.length) {
+              selectDistrict(
+                districts[elements[0].index].id
+              );
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label(context) {
+                  const isPercent =
+                    document.getElementById("chartMetricSelect")
+                      .value !== "population" &&
+                    document.getElementById("chartMetricSelect")
+                      .value !== "households" &&
+                    document.getElementById("chartMetricSelect")
+                      .value !== "barangays";
+
+                  return isPercent
+                    ? `${context.formattedValue}%`
+                    : numberFormat(context.raw);
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback(value) {
+                  return numberFormat(value);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function districtMapStyle(feature) {
+      const districtId = Number(feature.properties.district_id);
+      const isSelected = districtId === selectedDistrictId;
+
+      return {
+        color: isSelected ? "#064e3b" : "#ffffff",
+        weight: isSelected ? 4 : 2,
+        fillColor: districtColors[districtId],
+        fillOpacity: isSelected ? 0.9 : 0.7
+      };
+    }
+
+    let municipalityMarkersLayer;
+
+    function performanceColor(score) {
+      if (score >= 85) return "#15803d";
+      if (score >= 75) return "#65a30d";
+      if (score >= 65) return "#f59e0b";
+      return "#dc2626";
+    }
+
+    function renderMunicipalityMarkers() {
+      if (!municipalityMarkersLayer) return;
+
+      municipalityMarkersLayer.clearLayers();
+
+      districts.forEach(district => {
+        district.municipalities.forEach(municipality => {
+          if (
+            typeof municipality.lat !== "number" ||
+            typeof municipality.lng !== "number"
+          ) {
+            return;
+          }
+
+          const radius = Math.max(
+            6,
+            Math.min(22, Math.sqrt(municipality.population) / 20)
+          );
+
+          const isCurrent =
+            district.id === selectedDistrictId &&
+            selectedMunicipality === municipality.name;
+
+          const marker = L.circleMarker(
+            [municipality.lat, municipality.lng],
+            {
+              radius,
+              weight: isCurrent ? 3 : 1.5,
+              color: isCurrent ? "#052e1c" : "#ffffff",
+              fillColor: performanceColor(municipality.performance),
+              fillOpacity: 0.85
+            }
+          );
+
+          marker.bindTooltip(
+            `<strong>${municipality.name}</strong><br>` +
+            `District ${district.id} &middot; ` +
+            `${numberFormat(municipality.population)} population<br>` +
+            `Basic Services Index: ${municipality.performance}%<br>` +
+            `Electricity ${municipality.electricity}% &middot; ` +
+            `Internet ${municipality.internet}%<br>` +
+            `Water ${municipality.water}% &middot; ` +
+            `Sanitation ${municipality.sanitation}%`,
+            { className: "district-tooltip", sticky: true }
+          );
+
+          marker.on("click", () => {
+            selectMunicipality(municipality.name, district.id);
+          });
+
+          municipalityMarkersLayer.addLayer(marker);
+        });
+      });
+    }
+
+    function initializeDistrictMap() {
+      districtMap = L.map("districtMap", {
+        zoomControl: true,
+        scrollWheelZoom: false
+      });
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors"
+        }
+      ).addTo(districtMap);
+
+      districtGeoJSONLayer = L.geoJSON(districtGeoJSON, {
+        style: districtMapStyle,
+        onEachFeature(feature, layer) {
+          const properties = feature.properties;
+
+          layer.bindTooltip(
+            `<strong>${properties.name}</strong><br>` +
+            `${properties.municipalities} municipalities`,
+            { className: "district-tooltip", sticky: true }
+          );
+
+          layer.on({
+            click() {
+              selectDistrict(properties.district_id);
+            },
+            mouseover(event) {
+              event.target.setStyle({ fillOpacity: 0.95 });
+              event.target.bringToFront();
+            },
+            mouseout(event) {
+              districtGeoJSONLayer.resetStyle(event.target);
+            }
+          });
+        }
+      }).addTo(districtMap);
+
+      municipalityMarkersLayer = L.layerGroup().addTo(districtMap);
+      renderMunicipalityMarkers();
+
+      const bounds = districtGeoJSONLayer.getBounds();
+
+      if (bounds.isValid()) {
+        districtMap.fitBounds(bounds, { padding: [18, 18] });
+      } else {
+        districtMap.setView([15.5, 120.55], 9);
+      }
+
+      /*
+        Leaflet computes tile layout from the container size at the
+        moment the map is created. If that size changes afterwards
+        (webfonts loading, sidebar animating open/closed, the browser
+        window resizing, or the card simply reflowing after paint) the
+        map is left showing grey/blank tiles until it is nudged. The
+        calls below keep the map in sync with its container.
+      */
+
+      window.setTimeout(() => districtMap.invalidateSize(), 200);
+
+      window.addEventListener("resize", () => {
+        districtMap.invalidateSize();
+      });
+
+      if (window.ResizeObserver) {
+        new ResizeObserver(() => {
+          districtMap.invalidateSize();
+        }).observe(document.getElementById("districtMap").parentElement);
+      }
+    }
+
+    function updateDistrictMap() {
+      if (!districtGeoJSONLayer) return;
+
+      districtGeoJSONLayer.setStyle(districtMapStyle);
+      renderMunicipalityMarkers();
+
+      districtGeoJSONLayer.eachLayer(layer => {
+        if (
+          Number(layer.feature.properties.district_id) ===
+          selectedDistrictId
+        ) {
+          const bounds = layer.getBounds();
+
+          if (bounds.isValid()) {
+            districtMap.fitBounds(bounds, {
+              padding: [35, 35],
+              maxZoom: 10
+            });
+          }
+        }
+      });
+
+      districtMap.invalidateSize();
+    }
+
+    function toggleDistrictFold(districtId) {
+      if (expandedDistricts.has(districtId)) {
+        expandedDistricts.delete(districtId);
+      } else {
+        expandedDistricts.add(districtId);
+      }
+
+      renderSidebar();
+    }
+
+    function renderSidebar() {
+      districtList.innerHTML = "";
+
+      districts.forEach(district => {
+        const isOpen = expandedDistricts.has(district.id);
+
+        const districtSection = document.createElement("div");
+
+        const districtButton = document.createElement("div");
+
+        districtButton.className = "district-button";
+
+        if (selectedDistrictId === district.id) {
+          districtButton.classList.add("current");
+        }
+
+        const districtName = document.createElement("button");
+
+        districtName.type = "button";
+        districtName.className = "district-name";
+        districtName.textContent = `District ${district.id}`;
+        districtName.setAttribute(
+          "aria-current",
+          selectedDistrictId === district.id ? "true" : "false"
+        );
+
+        districtName.addEventListener("click", () => {
+          selectDistrict(district.id);
+        });
+
+        const districtToggle = document.createElement("button");
+
+        districtToggle.type = "button";
+        districtToggle.className = "district-toggle";
+
+        if (isOpen) {
+          districtToggle.classList.add("open");
+        }
+
+        districtToggle.innerHTML = "⌄";
+        districtToggle.setAttribute("aria-expanded", String(isOpen));
+        districtToggle.setAttribute(
+          "aria-label",
+          `Toggle District ${district.id} municipalities`
+        );
+
+        districtToggle.addEventListener("click", event => {
+          event.stopPropagation();
+          toggleDistrictFold(district.id);
+        });
+
+        districtButton.appendChild(districtName);
+        districtButton.appendChild(districtToggle);
+
+        const municipalityList =
+          document.createElement("div");
+
+        municipalityList.className = "municipality-list";
+
+        if (isOpen) {
+          municipalityList.classList.add("open");
+        }
+
+        const municipalityListInner =
+          document.createElement("div");
+
+        municipalityListInner.className =
+          "municipality-list-inner";
+
+        district.municipalities.forEach(municipality => {
+          const municipalityButton =
+            document.createElement("button");
+
+          municipalityButton.type = "button";
+          municipalityButton.className =
+            "municipality-button";
+
+          municipalityButton.textContent =
+            municipality.name;
+
+          if (
+            selectedMunicipality === municipality.name
+          ) {
+            municipalityButton.classList.add("selected");
+          }
+
+          municipalityButton.addEventListener(
+            "click",
+            () => {
+              selectMunicipality(
+                municipality.name,
+                district.id
+              );
+            }
+          );
+
+          municipalityListInner.appendChild(
+            municipalityButton
+          );
+        });
+
+        municipalityList.appendChild(municipalityListInner);
+
+        districtSection.appendChild(districtButton);
+        districtSection.appendChild(municipalityList);
+
+        districtList.appendChild(districtSection);
+      });
+    }
+
+    function renderPerformance() {
+      const district = getDistrict(selectedDistrictId);
+
+      performanceList.innerHTML = "";
+
+      performanceTitle.textContent =
+        `District ${selectedDistrictId} Municipal Performance`;
+
+      performanceHeading.textContent =
+        activeCategory === "Overview"
+          ? "Basic Services Index"
+          : `${activeCategory} access`;
+
+      const sortedMunicipalities = [
+        ...district.municipalities
+      ].sort((a, b) =>
+        a.name.localeCompare(b.name, "en", {
+          sensitivity: "base"
+        })
+      );
+
+      sortedMunicipalities.forEach(municipality => {
+        const button = document.createElement("button");
+
+        button.className = "performance-item";
+
+        if (
+          selectedMunicipality === municipality.name
+        ) {
+          button.classList.add("selected");
+        }
+
+        /*
+          Real CBMS 2024 indicator per tab:
+          Overview -> Basic Services Index (average of the four below)
+          Electricity -> % of households with access to electricity
+          Internet -> % of households with home internet access
+          Water -> % of households with basic drinking water service
+          Sanitation -> % of households with basic sanitation service
+        */
+
+        let score = municipality.performance;
+
+        if (activeCategory === "Electricity") {
+          score = municipality.electricity;
+        }
+
+        if (activeCategory === "Internet") {
+          score = municipality.internet;
+        }
+
+        if (activeCategory === "Water") {
+          score = municipality.water;
+        }
+
+        if (activeCategory === "Sanitation") {
+          score = municipality.sanitation;
+        }
+
+        score = Math.round(score);
+
+        button.innerHTML = `
+          <span>${municipality.name}</span>
+
+          <span class="progress-bar">
+            <i
+              class="progress-fill"
+              style="display:block;width:${score}%"
+            ></i>
+          </span>
+
+          <span class="performance-value">
+            ${score}%
+          </span>
+        `;
+
+        button.addEventListener("click", () => {
+          selectMunicipality(
+            municipality.name,
+            selectedDistrictId
+          );
+        });
+
+        performanceList.appendChild(button);
+      });
+    }
+
+    function updateDashboard() {
+      const district = getDistrict(selectedDistrictId);
+      const totals = calculateDistrictTotals(district);
+
+      let displayData;
+      let displayName;
+      let averagePerformance;
+
+      if (selectedMunicipality) {
+        displayData =
+          getMunicipality(selectedMunicipality);
+
+        displayName = displayData.name;
+        averagePerformance =
+          displayData.performance;
+      } else {
+        displayData = totals;
+        displayName =
+          `District ${selectedDistrictId}`;
+
+        averagePerformance = Math.round(
+          totals.performance /
+          district.municipalities.length
+        );
+      }
+
+      populationValue.textContent =
+        numberFormat(displayData.population);
+
+      householdsValue.textContent =
+        numberFormat(displayData.households);
+
+      barangaysValue.textContent =
+        numberFormat(displayData.barangays);
+
+      projectsValue.textContent =
+        selectedMunicipality
+          ? "12"
+          : numberFormat(
+              district.municipalities.length * 12
+            );
+
+      pageTitle.textContent =
+        `${displayName} Overview`;
+
+      profileTitle.textContent =
+        `${displayName} Profile`;
+
+      performanceScore.textContent =
+        `${averagePerformance}%`;
+
+      scoreCircle.textContent =
+        averagePerformance;
+
+      const calculatedHouseholdSize =
+        displayData.households > 0
+          ? (
+              displayData.population /
+              displayData.households
+            ).toFixed(1)
+          : "0";
+
+      householdSize.textContent =
+        calculatedHouseholdSize;
+
+      projectCoverage.textContent =
+        selectedMunicipality
+          ? "12 projects"
+          : "Province-led";
+
+      dataLevel.textContent =
+        selectedMunicipality
+          ? "Municipality"
+          : "District";
+
+      districtLabel.textContent =
+        selectedMunicipality
+          ? `District ${selectedDistrictId}`
+          : `${district.municipalities.length} Municipalities`;
+
+      breadcrumb.textContent =
+        selectedMunicipality
+          ? `Province / District ${selectedDistrictId} / ${selectedMunicipality}`
+          : `Province / District ${selectedDistrictId}`;
+
+      districtSelect.value =
+        String(selectedDistrictId);
+
+      document
+        .querySelectorAll("[data-map-district]")
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            Number(button.dataset.mapDistrict) ===
+              selectedDistrictId
+          );
+        });
+
+      updateDistrictMap();
+
+      renderSidebar();
+      renderPerformance();
+      renderDistrictChart();
+    }
+
+    function selectDistrict(districtId) {
+      selectedDistrictId = Number(districtId);
+      selectedMunicipality = null;
+
+      expandedDistricts.add(selectedDistrictId);
+
+      closeMobileSidebar();
+      updateDashboard();
+    }
+
+    function selectMunicipality(
+      municipalityName,
+      districtId
+    ) {
+      selectedDistrictId = Number(districtId);
+      selectedMunicipality = municipalityName;
+
+      expandedDistricts.add(selectedDistrictId);
+
+      searchInput.value = "";
+      searchResults.classList.remove("show");
+
+      closeMobileSidebar();
+      updateDashboard();
+    }
+
+    function renderSearchResults(query) {
+      const cleanQuery =
+        query.trim().toLowerCase();
+
+      searchResults.innerHTML = "";
+
+      if (!cleanQuery) {
+        searchResults.classList.remove("show");
+        return;
+      }
+
+      const results = [];
+
+      districts.forEach(district => {
+        district.municipalities.forEach(
+          municipality => {
+            if (
+              municipality.name
+                .toLowerCase()
+                .includes(cleanQuery)
+            ) {
+              results.push({
+                ...municipality,
+                districtId: district.id
+              });
+            }
+          }
+        );
+      });
+
+      if (results.length === 0) {
+        searchResults.innerHTML = `
+          <div style="padding:12px;color:#64746a">
+            No municipality found.
+          </div>
+        `;
+
+        searchResults.classList.add("show");
+        return;
+      }
+
+      results.forEach(result => {
+        const button =
+          document.createElement("button");
+
+        button.className = "search-result";
+
+        button.innerHTML = `
+          <strong>${result.name}</strong>
+          <small>
+            District ${result.districtId}
+            · ${result.barangays} barangays
+          </small>
+        `;
+
+        button.addEventListener("click", () => {
+          selectMunicipality(
+            result.name,
+            result.districtId
+          );
+        });
+
+        searchResults.appendChild(button);
+      });
+
+      searchResults.classList.add("show");
+    }
+
+    function openMobileSidebar() {
+      sidebar.classList.add("open");
+      overlay.style.display = "block";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeMobileSidebar() {
+      sidebar.classList.remove("open");
+      overlay.style.display = "";
+      document.body.style.overflow = "";
+    }
+
+    searchInput.addEventListener("input", event => {
+      renderSearchResults(event.target.value);
+    });
+
+    districtSelect.addEventListener(
+      "change",
+      event => {
+        selectDistrict(event.target.value);
+      }
+    );
+
+    document
+      .getElementById("chartMetricSelect")
+      .addEventListener("change", renderDistrictChart);
+
+    document
+      .querySelectorAll("[data-map-district]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          selectDistrict(
+            button.dataset.mapDistrict
+          );
+        });
+      });
+
+    document
+      .querySelectorAll(".tab")
+      .forEach(tab => {
+        tab.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach(item => {
+              item.classList.remove("active");
+            });
+
+          tab.classList.add("active");
+
+          activeCategory =
+            tab.dataset.category;
+
+          renderPerformance();
+        });
+      });
+
+    document
+      .getElementById("resetButton")
+      .addEventListener("click", () => {
+        selectedMunicipality = null;
+        updateDashboard();
+      });
+
+    document
+      .getElementById("menuButton")
+      .addEventListener(
+        "click",
+        openMobileSidebar
+      );
+
+    document
+      .getElementById("closeSidebar")
+      .addEventListener(
+        "click",
+        closeMobileSidebar
+      );
+
+    overlay.addEventListener(
+      "click",
+      closeMobileSidebar
+    );
+
+    document.addEventListener("click", event => {
+      if (
+        !event.target.closest(".search-container")
+      ) {
+        searchResults.classList.remove("show");
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      if (
+        event.key === "Escape" &&
+        sidebar.classList.contains("open")
+      ) {
+        closeMobileSidebar();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (
+        window.innerWidth > 900 &&
+        sidebar.classList.contains("open")
+      ) {
+        closeMobileSidebar();
+      }
+    });
+
+    initializeDistrictMap();
+    updateDashboard();
+  </script>
+</body>
+</html>

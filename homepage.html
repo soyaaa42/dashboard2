@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarlac Province | Tarlac Province System</title>
+  <meta name="description" content="Tarlac Province GIS System — official landing page for the PPDO Dashboard, Economic, Social, Infrastructure, Environment and Institutional sector data." />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --cream: #f7f3e9;
+      --muted: rgba(248,245,236,.72);
+      --gold: #f2c94c;
+      --dark: #121212;
+      --glass: rgba(255,255,255,.10);
+      --glass-strong: rgba(255,255,255,.16);
+      --border: rgba(255,255,255,.20);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body{
+      min-height:100vh;
+      color:#222;
+      overflow-x:hidden;
+      background:#ffffff;
+    }
+
+    /* ============================================================
+       LOADING SCREEN
+       ============================================================ */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: linear-gradient(135deg, #7b6222 0%, #906b52 28%, #2d2d25 58%, #4a354f 100%);
+      transition: opacity .6s ease, visibility .6s ease;
+    }
+    #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-seal {
+      width: 74px; height: 74px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: rgba(255,255,255,.08);
+      padding: 6px;
+      animation: pulseSeal 1.4s ease-in-out infinite;
+    }
+    .loader-ring {
+      width: 46px; height: 46px;
+      border: 3px solid rgba(247,243,233,.22);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .9s linear infinite;
+    }
+    .loader-text {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulseSeal { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.08); } }
+
+    /* ============================================================
+       FADE-IN UTILITIES
+       ============================================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeInUp .8s ease forwards;
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in.d1 { animation-delay: .05s; }
+    .fade-in.d2 { animation-delay: .18s; }
+    .fade-in.d3 { animation-delay: .30s; }
+    .fade-in.d4 { animation-delay: .42s; }
+    .fade-in.d5 { animation-delay: .54s; }
+    .fade-in.d6 { animation-delay: .66s; }
+
+    .homepage {
+      min-height: 100vh;
+      position: relative;
+      padding: 28px 42px 34px;
+      isolation: isolate;
+      background:
+      radial-gradient(circle at 14% 18%, rgba(201, 142, 30, 0.9) 0 12%, transparent 38%),
+      radial-gradient(circle at 73% 60%, rgba(194, 120, 198, 0.72) 0 14%, transparent 38%),
+      radial-gradient(circle at 78% 20%, rgba(42, 64, 37, 0.85) 0 20%, transparent 47%),
+      linear-gradient(135deg, #7b6222 0%, #906b52 28%, #2d2d25 58%, #4a354f 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .homepage::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      background-image:url("tarlac_official_seal.png");
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:900px;
+      opacity:.13;
+      pointer-events:none;
+    }
+
+    .brand-logo{
+      width:55px;
+      height:55px;
+      object-fit:contain;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      padding:4px;
+      box-shadow:0 4px 15px rgba(0,0,0,.3);
+      transition: transform .3s ease;
+    }
+    .brand:hover .brand-logo { transform: rotate(-6deg) scale(1.05); }
+
+    .top-pill {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 172px;
+      height: 26px;
+      background: #050505;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .navbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      position: relative;
+      z-index: 5;
+      margin-bottom: 56px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      background: rgba(12,18,14,.22);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 35px rgba(0,0,0,.14);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--cream);
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .brand span { display: block; line-height: 1.05; }
+    .brand span:last-child {
+      margin-top: 4px;
+      color: rgba(248,245,236,.64);
+      font-size: .69rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(0,0,0,.16);
+      border-radius: 999px;
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--cream);
+      text-decoration: none;
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: .25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--cream);
+      color: #171717;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(330px, .82fr) minmax(560px, 1.18fr);
+      gap: clamp(34px, 5vw, 76px);
+      align-items: center;
+      flex: 1;
+    }
+
+    .hero-title {
+      max-width: 760px;
+      font-size: clamp(2.5rem, 4.7vw, 5rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-shadow: 0 10px 34px rgba(0,0,0,.4);
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.7;
+      margin-bottom: 30px;
+      padding-left: 18px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      background: var(--cream);
+      color: #1d1d1d;
+      padding: 16px 30px;
+      border-radius: 12px;
+      font-size: .93rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 0 12px 35px rgba(0,0,0,.25);
+      transition: .25s ease;
+    }
+
+    .btn:hover { transform: translateY(-3px); background: #fff; box-shadow: 0 16px 42px rgba(0,0,0,.32); }
+    .btn:active { transform: translateY(-1px); }
+
+    .btn.secondary {
+      background: rgba(255,255,255,.10);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      box-shadow: none;
+      backdrop-filter: blur(10px);
+    }
+    .btn.secondary:hover { background: rgba(255,255,255,.18); }
+
+    .btn .arrow { transition: transform .25s ease; }
+    .btn:hover .arrow { transform: translateX(4px); }
+
+    .meta {
+      font-size: .88rem;
+      font-weight: 900;
+      letter-spacing: .22em;
+      color: rgba(248,245,236,.62);
+      text-transform: uppercase;
+    }
+
+    .panel {
+      background: rgba(10,16,12,.32);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(22px);
+      box-shadow: 0 28px 70px rgba(0,0,0,.25);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 0 2px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .panel-head h2 {
+      color: var(--cream);
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+    }
+
+    .panel-head p {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .page-card {
+      min-width: 0;
+      min-height: 174px;
+      padding: 17px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.055));
+      color: var(--cream);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page-card::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      right: -54px;
+      top: -54px;
+      border-radius: 50%;
+      background: rgba(242,201,76,.12);
+      transition: .25s ease;
+    }
+
+    .page-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(242,201,76,.55);
+      background: linear-gradient(145deg, rgba(255,255,255,.19), rgba(255,255,255,.08));
+      box-shadow: 0 16px 34px rgba(0,0,0,.18);
+    }
+
+    .page-card:hover::after { transform: scale(1.4); }
+
+    .page-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(255,255,255,.14);
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      transition: transform .25s ease;
+    }
+    .page-card:hover .page-icon { transform: scale(1.1) rotate(-4deg); }
+
+    .page-card h3 {
+      max-width: 100%;
+      font-size: clamp(.92rem, 1.25vw, 1.02rem);
+      line-height: 1.2;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      overflow-wrap: anywhere;
+    }
+
+    .page-card p {
+      font-size: .79rem;
+      color: var(--muted);
+      line-height: 1.45;
+      overflow-wrap: break-word;
+    }
+
+    .page-card .go {
+      position: absolute;
+      right: 16px;
+      bottom: 14px;
+      margin-top: 10px;
+      font-size: .74rem;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .page-card:first-child {
+      grid-column: 1 / -1;
+      min-height: 138px;
+      padding: 20px;
+      background: linear-gradient(115deg, rgba(242,201,76,.20), rgba(255,255,255,.08));
+    }
+
+    .page-card:first-child > div {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      column-gap: 16px;
+      align-items: center;
+    }
+
+    .page-card:first-child .page-icon {
+      grid-row: 1 / span 2;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+    }
+
+    .page-card:first-child h3,
+    .page-card:first-child p { grid-column: 2; }
+
+    .page-card:first-child h3 { font-size: 1.13rem; }
+    .page-card:first-child p { max-width: 520px; font-size: .84rem; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer.site-footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 46px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-end;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--cream);
+    }
+    .footer-brand-text strong { display: block; font-size: .95rem; letter-spacing: .04em; text-transform: uppercase; }
+    .footer-brand-text span { font-size: .78rem; color: var(--muted); }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: color .2s ease; 
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-copy {
+      text-align: right;
+      font-size: .78rem;
+      color: var(--muted);
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1050px) {
+      .navbar { flex-direction: column; align-items: flex-start; margin-bottom: 50px; }
+      .nav-links { width: 100%; overflow-x: auto; justify-content: flex-start; border-radius: 18px; }
+      .hero-layout { grid-template-columns: 1fr; }
+      .hero-title { margin-bottom: 26px; }
+      .panel { width: 100%; }
+    }
+
+    @media (max-width: 700px) {
+      .homepage { padding: 24px 18px 28px; }
+      .top-pill { width: 120px; height: 20px; }
+      .hero-title { font-size: 2.6rem; line-height: 1.08; }
+      .page-grid { grid-template-columns: 1fr; }
+      .page-card:first-child { grid-column: auto; }
+      .page-card { min-height: 160px; }
+      .nav-links a { padding: 11px 13px; font-size: .75rem; }
+      footer.site-footer { flex-direction: column; align-items: flex-start; }
+      .footer-copy { text-align: left; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in, #loader, .loader-seal, .loader-ring { animation: none !important; transition: none !important; }
+      .fade-in { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader" aria-hidden="true">
+    <img src="tarlac_official_seal.png" alt="" class="loader-seal">
+    <div class="loader-ring"></div>
+    <p class="loader-text">Loading</p>
+  </div>
+
+  <main class="homepage">
+
+    <header class="navbar fade-in d1">
+      <a class="brand" href="index.html" aria-label="Tarlac Province GIS Homepage">
+        <img src="tarlac_official_seal.png" alt="Province of Tarlac Seal" class="brand-logo">
+        <div>
+          <span>Tarlac Province</span>
+          <span>System</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html" class="active">Home</a>
+        <a href="dashboardupdated.html">Dashboard</a>
+        <a href="district.html">LGU's District</a>
+        <a href="economic-sector.html">Economic Sector</a>
+        <a href="social-sector.html">Social Sector</a>
+        <a href="infrastructure.html">Infrastructure Sector</a>
+        <a href="environment.html">Environment Sector</a>
+      </nav>
+    </header>
+
+    <section class="hero-layout">
+      <div class="hero-content">
+        <h1 class="hero-title fade-in d2">Tarlac PPDO Database System</h1>
+        <p class="hero-copy fade-in d3">
+          Explore CBMS indicators, municipal profiles, sector data, and development information across Tarlac Province.
+        </p>
+
+        <div class="btn-row fade-in d4">
+          <a href="dashboardupdated.html" class="btn">Enter Dashboard <span class="arrow">→</span></a>
+          <a href="dashboardupdated.html#infra" class="btn secondary">Open Data Map <span class="arrow">→</span></a>
+        </div>
+
+        <p class="meta fade-in d5">Tarlac Province PPDO GIS System · 2026</p>
+      </div>
+
+      <aside class="panel fade-in d4" id="pages">
+        <div class="panel-head">
+          <h2>Content</h2>
+          <p>Quick access</p>
+        </div>
+
+        <div class="page-grid">
+          <a href="dashboardupdated.html" class="page-card">
+            <div>
+              <div class="page-icon">📊</div>
+              <h3>PPDO Dashboard</h3>
+              <p>View the provincial LGU map, CBMS indicators, and municipality-level data.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+          
+          <a href="district.html" class="page-card">
+            <div>
+              <div class="page-icon">🗺️</div>
+              <h3>LGU Districts</h3>
+              <p>Browse municipalities and their corresponding legislative districts.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+
+          <a href="economic-sector.html" class="page-card">
+            <div>
+              <div class="page-icon">💼</div>
+              <h3>Economic</h3>
+              <p>Explore agriculture, industry, employment, and local economic indicators.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+
+          <a href="social-sector.html" class="page-card">
+            <div>
+              <div class="page-icon">👥</div>
+              <h3>Social</h3>
+              <p>Review population, health, education, and household service indicators.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+
+          <a href="infrastructure.html" class="page-card">
+            <div>
+              <div class="page-icon">🏗️</div>
+              <h3>Infrastructure</h3>
+              <p>View roads, utilities, public facilities, projects, and essential services.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+
+          <a href="environment.html" class="page-card">
+            <div>
+              <div class="page-icon">🌱</div>
+              <h3>Environment</h3>
+              <p>Review natural resources, forest cover, waste management, and climate resilience.</p>
+            </div>
+            <span class="go">→</span>
+          </a>
+
+          <a href="institutional-sector.html" class="page-card">
+            <div>
+              <div class="page-icon">🏛️</div>
+              <h3>Institutional</h3>
+              <p>Explore local governance, public offices, and administrative capacity.</p>
+            </div>
+            <span class="go">→</span>
+            </a>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="site-footer fade-in d6">
+      <div class="footer-brand">
+        <img src="tarlac_official_seal.png" alt="Province of Tarlac Seal" class="brand-logo" style="width:44px;height:44px;">
+        <div class="footer-brand-text">
+          <strong>Tarlac Province Data Bank System</strong>
+          <span>Provincial Planning and Development Office</span>
+        </div>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="dashboardupdated.html">Dashboard</a>
+        <a href="district.html">LGU's District</a>
+        <a href="dashboardupdated.html#infra">Data Map</a>
+        <a href="economic-sector.html">Economic</a>
+        <a href="social-sector.html">Social</a>
+        <a href="infrastructure.html">Infrastructure</a>
+        <a href="environment.html">Environment</a>
+      </nav>
+
+      <p class="footer-copy">© 2026 Province of Tarlac. All rights reserved.<br>Built for the PPDO Data Bank.</p>
+    </footer>
+  </main>
+
+  <script>
+    window.addEventListener('load', function () {
+      var loader = document.getElementById('loader');
+      setTimeout(function () {
+        loader.classList.add('loaded');
+      }, 350);
+    });
+
+    // Safety fallback: never let the loader get stuck
+    setTimeout(function () {
+      var loader = document.getElementById('loader');
+      if (loader) loader.classList.add('loaded');
+    }, 2500);
+
+    // Active navigation highlighting based on current page
+    (function () {
+      var current = location.pathname.split('/').pop() || 'index.html';
+      document.querySelectorAll('.nav-links a').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (href === current || (current === '' && href === 'index.html')) {
+          link.classList.add('active');
+        }
+      });
+    })();
+  </script>
+  
+</body>
+</html>
